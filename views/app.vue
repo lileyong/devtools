@@ -75,7 +75,7 @@
                                 })
                             })
                     }
-                    return { 
+                    return {
                         type: 'input', 
                         label: item, 
                         name: names.length ? names[0] : '' 
