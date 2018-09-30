@@ -29,6 +29,19 @@ let webpackConfig = {
                 "css-loader"
             ]
         },{
+            test:/\.styl/,
+            use:[
+                isDev ? "style-loader" : MiniCssExtractPlugin.loader,
+                "css-loader",
+                {
+                    loader: "postcss-loader",
+                    options: {
+                        sourceMap: true
+                    }
+                },
+                "stylus-loader"
+            ]
+        },{
             test:/\.(jpg|jpeg|png|svg|gif)$/,
             use:[{
                 loader:"url-loader",
@@ -45,7 +58,11 @@ let webpackConfig = {
     plugins:[
         new VueLoaderPlugin(),
         new HTMLWebpackPlugin({
-            title: 'ERP开发者工具'
+            title: 'ERP开发者工具',
+            meta: {
+                keywords: 'ERP, 开发者, 工具',
+                description: 'ERP开发者工具,解放ERP开发中的重复劳动'
+            }
         })
     ],
     output:{
@@ -54,41 +71,12 @@ let webpackConfig = {
     }
 }
 
-if (isDev) {
-    webpackConfig.module.rules.push({
-        test:/\.styl/,
-        use:[
-            "style-loader",
-            "css-loader",
-            {
-                loader: "postcss-loader",
-                options: {
-                    sourceMap: true
-                }
-            },
-            "stylus-loader"
-        ]
-    })
-} else {
+if (!isDev) {
     webpackConfig.entry = {
         app: path.join(__dirname,"js/main.js"),
         vendor: ["vue", "element-ui"]
     }
     webpackConfig.output.filename = "[name].[chunkhash:8].js";
-    webpackConfig.module.rules.push({
-        test:/\.styl/,
-        use: [
-            MiniCssExtractPlugin.loader,
-            "css-loader",
-            {
-                loader: "postcss-loader",
-                options: {
-                    sourceMap: true
-                }
-            },
-            "stylus-loader"
-        ]
-    })
     webpackConfig.plugins.push(
         new MiniCssExtractPlugin({
             filename: "[name].[chunkhash:8].css",
