@@ -34,6 +34,9 @@
                 outputVal: '',
             }
         },
+        mounted() {
+            this.getStorage()
+        },
         methods: {
             // 生成SearchFields
             generateSearchFields() {
@@ -77,6 +80,7 @@
                     }
                 })
                 this.outputVal = JSON.stringify(searchFields)
+                this.setStorage()
             },
             // 生成TableColumns
             generateTableColumns() {
@@ -117,13 +121,28 @@
                     }
                 })
                 this.outputVal = JSON.stringify(tableColumns)
+                this.setStorage()
             },
             // 清空输入框
             clearInput() {
                 this.inputFieldVal = ''
                 this.inputInterfaceVal = ''
                 this.outputVal = ''
-            }
+            },
+            // setStorage
+            setStorage() {
+                if (window.localStorage) {
+                    window.localStorage.setItem('inputFieldVal', this.inputFieldVal)
+                    window.localStorage.setItem('inputInterfaceVal', this.inputInterfaceVal)
+                }
+            },
+            // getStorage
+            getStorage() {
+                if (window.localStorage) {
+                    this.inputFieldVal = window.localStorage.getItem('inputFieldVal') || ''
+                    this.inputInterfaceVal = window.localStorage.getItem('inputInterfaceVal') || ''
+                }
+            },
         }
     }
 </script>
