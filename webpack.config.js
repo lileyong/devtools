@@ -7,7 +7,6 @@ let isDev = process.env.NODE_ENV === "development";
 let webpackConfig = {
     mode:process.env.NODE_ENV,
     entry:path.join(__dirname,"js/main.js"),
-    devtool: "#cheap-module-eval-source-map",
     devServer:{
         port: 9000,
         open: true,
@@ -71,7 +70,9 @@ let webpackConfig = {
     }
 }
 
-if (!isDev) {
+if (isDev) {
+    webpackConfig.devtool = "#cheap-module-eval-source-map"
+} else {
     webpackConfig.entry = {
         app: path.join(__dirname,"js/main.js"),
         vendor: ["vue", "element-ui"]
