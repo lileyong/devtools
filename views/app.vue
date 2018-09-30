@@ -3,7 +3,8 @@
         <div class="cover"></div>
         <div class="main">
             <div class="button-group">
-                <button class="el-button" @click="generateTableColumns">transform</button>
+                <button class="el-button" @click="generateSearchFields">SearchFields</button>
+                <button class="el-button" @click="generateTableColumns">TableColumns</button>
             </div>
             <div class="input-and-output">
                 <div class="left"><textarea id="input" v-model="inputVal"></textarea></div>
@@ -28,6 +29,19 @@
             }
         },
         methods: {
+            // 生成SearchFields
+            generateSearchFields() {
+                let searchFields = this.inputVal
+                .split(/\s/g)
+                .filter(item => {
+                    return item.length > 0
+                })
+                .map(item => {
+                    return { type: 'input', label: item, name: '' }
+                })
+                this.outputVal = JSON.stringify(searchFields)
+            },
+            // 生成TableColumns
             generateTableColumns() {
                 let tableColumns = this.inputVal
                 .split(/\s/g)
@@ -76,7 +90,7 @@
     }
     .el-button {
         margin: 8px 12px;
-        width: 106px;
+        min-width: 106px;
         height:32px;
         font-size: 18px;
         border-radius: 3px;
