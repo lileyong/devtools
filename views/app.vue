@@ -25,8 +25,6 @@
     import MainFooter from "../views/footer.jsx"
     import Clipboard from "../js/clipboard.js"
 
-    console.log(Clipboard)
-    
     export default {
         components: {
             MainFooter,
