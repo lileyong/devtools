@@ -59,6 +59,17 @@
                     }).filter(value => {
                         return value !== undefined
                     })
+                    if (!names.length) {
+                        console.table({
+                                "字段名": item,
+                                "匹配接口文档注释": "未找到相匹配的接口文档注释",
+                                "匹配结果": JSON.stringify({ 
+                                    type: 'input', 
+                                    label: item, 
+                                    name: ''
+                                })
+                            })
+                    }
                     return { 
                         type: 'input', 
                         label: item, 
@@ -90,6 +101,16 @@
                     }).filter(value => {
                         return value !== undefined
                     })
+                    if (!props.length) {
+                        console.table({
+                                "字段名": item,
+                                "匹配接口文档注释": "未找到相匹配的接口文档注释",
+                                "匹配结果": JSON.stringify({
+                                    prop: "",
+                                    label: item, 
+                                })
+                            })
+                    }
                     return {
                         prop: props.length ? props[0] : '',
                         label: item,
