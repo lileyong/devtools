@@ -83,7 +83,7 @@
                         name: names.length ? names[0] : '' 
                     }
                 })
-                this.outputVal = JSON.stringify(searchFields)
+                this.outputVal = "searchFields: " + JSON.stringify(searchFields).replace(/\[/g, "[\n").replace(/\]/g, "\n]").replace(/{/g, "    {").replace(/},/g, "},\n")
                 this.$notify({
                     title: '成功',
                     message: '转换成功',
@@ -129,7 +129,7 @@
                         label: item,
                     }
                 })
-                this.outputVal = JSON.stringify(tableColumns)
+                this.outputVal = "tableColumns: " + JSON.stringify(tableColumns).replace(/\[/g, "[\n").replace(/\]/g, "\n]").replace(/{/g, "    {").replace(/},/g, "},\n")
                 this.$notify({
                     title: '成功',
                     message: '转换成功',
@@ -158,6 +158,11 @@
                 this.inputFieldVal = ''
                 this.inputInterfaceVal = ''
                 this.outputVal = ''
+                this.$notify({
+                    title: '成功',
+                    message: '清除成功',
+                    type: 'success'
+                })
             },
             // setStorage
             setStorage() {
@@ -206,7 +211,7 @@
         background-color: #1e3046;
     }
     .sh-button {
-        margin: 8px 12px;
+        margin: 8px 8px 8px 12px;
         min-width: 106px;
         height:32px;
         font-size: 18px;
@@ -242,6 +247,7 @@
     #inputField, #inputInterface {
         border: 1px solid #dedede;
         background-color: #fff;
+        border-radius: 0px;
     }
     #inputField {
         border-right: none;
@@ -249,5 +255,6 @@
     #output {
         border: 1px solid #eeeeee;
         background-color: #f0f0f0;
+        border-radius: 0px 0px 6px 6px;
     }
 </style>
