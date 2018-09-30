@@ -37,6 +37,9 @@ let webpackConfig = {
                     name:"[name].[ext]"
                 }
             }]
+        },{ 
+            test: /\.(ttf|eot|woff)$/,
+            loader: "file-loader"
         }]
     },
     plugins:[

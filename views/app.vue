@@ -3,9 +3,10 @@
         <div class="cover"></div>
         <div class="main">
             <div class="button-group">
-                <button class="el-button" @click="generateSearchFields">SearchFields</button>
-                <button class="el-button" @click="generateTableColumns">TableColumns</button>
-                <button class="el-button clear" @click="clearInput">Clear</button>
+                <button class="sh-button" @click="generateSearchFields">SearchFields</button>
+                <button class="sh-button" @click="generateTableColumns">TableColumns</button>
+                <button class="sh-button copy" @click="copyOutput">Copy</button>
+                <button class="sh-button clear" @click="clearInput">Clear</button>
             </div>
             <div class="input-and-output">
                 <!--需求文档中的字段输入-->
@@ -22,6 +23,9 @@
 
 <script>
     import MainFooter from "../views/footer.jsx"
+    import Clipboard from "../js/clipboard.js"
+
+    console.log(Clipboard)
     
     export default {
         components: {
@@ -123,6 +127,22 @@
                 this.outputVal = JSON.stringify(tableColumns)
                 this.setStorage()
             },
+            // 复制输出结果
+            copyOutput() {
+                if (!this.outputVal) {
+                    return this.$notify({
+                        title: '警告',
+                        message: '没有可复制的内容...',
+                        type: 'warning'
+                    })
+                }
+                Clipboard.writeText(this.outputVal)
+                this.$notify({
+                    title: '成功',
+                    message: '复制成功',
+                    type: 'success'
+                })
+            },
             // 清空输入框
             clearInput() {
                 this.inputFieldVal = ''
@@ -175,7 +195,7 @@
         height: 48px;
         background-color: #1e3046;
     }
-    .el-button {
+    .sh-button {
         margin: 8px 12px;
         min-width: 106px;
         height:32px;
@@ -184,11 +204,15 @@
         background-color: #fff;
         cursor: pointer;
     }
-    .el-button.clear {
+    .sh-button.copy {
+        background-color: #f63832;
+        color:#fff;
+    }
+    .sh-button.clear {
         background-color: #06cd3e;
         color: #fff;
     }
-    .el-button:hover {
+    .sh-button:hover {
         opacity: 0.9;
     }
     .input-and-output {
