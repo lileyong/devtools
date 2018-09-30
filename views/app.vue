@@ -84,6 +84,11 @@
                     }
                 })
                 this.outputVal = JSON.stringify(searchFields)
+                this.$notify({
+                    title: '成功',
+                    message: '转换成功',
+                    type: 'success'
+                })
                 this.setStorage()
             },
             // 生成TableColumns
@@ -125,6 +130,11 @@
                     }
                 })
                 this.outputVal = JSON.stringify(tableColumns)
+                this.$notify({
+                    title: '成功',
+                    message: '转换成功',
+                    type: 'success'
+                })
                 this.setStorage()
             },
             // 复制输出结果
