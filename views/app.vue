@@ -5,10 +5,15 @@
             <div class="button-group">
                 <button class="el-button" @click="generateSearchFields">SearchFields</button>
                 <button class="el-button" @click="generateTableColumns">TableColumns</button>
+                <button class="el-button clear" @click="clearInput">Clear</button>
             </div>
             <div class="input-and-output">
-                <div class="left"><textarea id="input" v-model="inputVal"></textarea></div>
-                <div class="right"><textarea id="output" v-model="outputVal"></textarea></div>
+                <!--需求文档中的字段输入-->
+                <div class="top"><textarea id="inputField" v-model="inputFieldVal" placeholder="输入需求文档中的字段"></textarea></div>
+                <!--接口文档中的字段及注释输入-->
+                <div class="top"><textarea id="inputInterface" v-model="inputInterfaceVal" placeholder="输入接口文档中的字段及注释"></textarea></div>
+                <!--输出对应格式的代码-->
+                <div class="bottom"><textarea id="output" v-model="outputVal" placeholder="输出对应格式的代码"></textarea></div>
             </div>
         </div>
         <main-footer></main-footer>
@@ -17,44 +22,86 @@
 
 <script>
     import MainFooter from "../views/footer.jsx"
-
+    
     export default {
         components: {
             MainFooter,
         },
         data() {
             return {
-                inputVal: '',
+                inputFieldVal: '',
+                inputInterfaceVal: '',
                 outputVal: '',
             }
         },
         methods: {
             // 生成SearchFields
             generateSearchFields() {
-                let searchFields = this.inputVal
+                let searchFields = this.inputFieldVal
                 .split(/\s/g)
                 .filter(item => {
                     return item.length > 0
                 })
                 .map(item => {
-                    return { type: 'input', label: item, name: '' }
+                    let names = this.inputInterfaceVal.split(/\n/g).map(lineStr => {
+                        if(lineStr.indexOf(item) > -1) {
+                            console.table({
+                                "字段名": item,
+                                "匹配接口文档注释": lineStr,
+                                "匹配结果": JSON.stringify({
+                                    type: 'input', 
+                                    label: item, 
+                                    name: lineStr.split(/:/)[0].replace(/[\s\"\']/g, '')
+                                })
+                            })
+                            return lineStr.split(/:/)[0].replace(/[\s\"\']/g, '')
+                        }
+                    }).filter(value => {
+                        return value !== undefined
+                    })
+                    return { 
+                        type: 'input', 
+                        label: item, 
+                        name: names.length ? names[0] : '' 
+                    }
                 })
                 this.outputVal = JSON.stringify(searchFields)
             },
             // 生成TableColumns
             generateTableColumns() {
-                let tableColumns = this.inputVal
+                let tableColumns = this.inputFieldVal
                 .split(/\s/g)
                 .filter(item => {
                     return item.length > 0
                 })
                 .map(item => {
+                    let props = this.inputInterfaceVal.split(/\n/g).map(lineStr => {
+                        if(lineStr.indexOf(item) > -1) {
+                            console.table({
+                                "字段名": item,
+                                "匹配接口文档注释": lineStr,
+                                "匹配结果": JSON.stringify({
+                                    prop: lineStr.split(/:/)[0].replace(/[\s\"\']/g, ''),
+                                    label: item, 
+                                })
+                            })
+                            return lineStr.split(/:/)[0].replace(/[\s\"\']/g, '')
+                        }
+                    }).filter(value => {
+                        return value !== undefined
+                    })
                     return {
-                        prop: '',
+                        prop: props.length ? props[0] : '',
                         label: item,
                     }
                 })
                 this.outputVal = JSON.stringify(tableColumns)
+            },
+            // 清空输入框
+            clearInput() {
+                this.inputFieldVal = ''
+                this.inputInterfaceVal = ''
+                this.outputVal = ''
             }
         }
     }
@@ -97,24 +144,33 @@
         background-color: #fff;
         cursor: pointer;
     }
+    .el-button.clear {
+        background-color: #06cd3e;
+        color: #fff;
+    }
     .el-button:hover {
         opacity: 0.9;
     }
     .input-and-output {
-        display: grid;
         width: 100%;
         height: 520px;
-        grid-template-columns: 50% 50%;
     }
-    #input, #output {
-        width: 100%;
-        height: 100%;
+    #inputField, #inputInterface, #output{
+        float: left;
+        width: 50%;
+        height: 260px;
         font-size: 16px;
         line-height: 1.25;
     }
-    #input {
+    #output {
+        width: 100%;
+    }
+    #inputField, #inputInterface {
         border: 1px solid #dedede;
         background-color: #fff;
+    }
+    #inputField {
+        border-right: none;
     }
     #output {
         border: 1px solid #eeeeee;
