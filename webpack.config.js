@@ -86,7 +86,8 @@ if (isDev) {
     )
     webpackConfig.optimization = {
         splitChunks: {
-            name: "vendor"
+            name: "vendor",
+            chunks: 'all',
         }
     }
 }
