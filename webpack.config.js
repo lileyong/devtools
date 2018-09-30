@@ -72,7 +72,7 @@ if (isDev) {
 } else {
     webpackConfig.entry = {
         app: path.join(__dirname,"js/main.js"),
-        vendor: ["vue"]
+        vendor: ["vue", "element-ui"]
     }
     webpackConfig.output.filename = "[name].[chunkhash:8].js";
     webpackConfig.module.rules.push({

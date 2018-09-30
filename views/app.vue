@@ -215,11 +215,11 @@
         cursor: pointer;
     }
     .sh-button.copy {
-        background-color: #f63832;
+        background-color: #06cd3e;
         color:#fff;
     }
     .sh-button.clear {
-        background-color: #06cd3e;
+        background-color: #f63832;
         color: #fff;
     }
     .sh-button:hover {
