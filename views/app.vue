@@ -201,6 +201,7 @@
         min-width: 850px;
         max-width: 1220px;
         box-shadow: 0 0 5px #666;
+        opacity: 0.9;
     }
     .button-group {
         display: flex;
