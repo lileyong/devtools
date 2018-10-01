@@ -81,7 +81,7 @@
                         name: names.length ? names[0] : '' 
                     }
                 })
-                this.outputVal = "searchFields: " + JSON.stringify(searchFields).replace(/\[/g, "[\n").replace(/\]/g, "\n]").replace(/{/g, "    {").replace(/},/g, "},\n")
+                this.outputVal = "searchFields: " + JSON.stringify(searchFields).replace(/\[/g, "[\n").replace(/\]/g, "\n]").replace(/{/g, "\t{").replace(/},/g, "},\n")
                 this.$notify({
                     title: '成功',
                     message: '转换成功',
@@ -127,7 +127,7 @@
                         label: item,
                     }
                 })
-                this.outputVal = "tableColumns: " + JSON.stringify(tableColumns).replace(/\[/g, "[\n").replace(/\]/g, "\n]").replace(/{/g, "    {").replace(/},/g, "},\n")
+                this.outputVal = "tableColumns: " + JSON.stringify(tableColumns).replace(/\[/g, "[\n").replace(/\]/g, "\n]").replace(/{/g, "\t{").replace(/},/g, "},\n")
                 this.$notify({
                     title: '成功',
                     message: '转换成功',
