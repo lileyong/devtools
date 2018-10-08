@@ -5,6 +5,7 @@
             <div class="button-group">
                 <button class="sh-button" @click="generateSearchFields">SearchFields</button>
                 <button class="sh-button" @click="generateTableColumns">TableColumns</button>
+                <button class="sh-button" @click="generateExportParas">Exports</button>
                 <button class="sh-button copy" @click="copyOutput">Copy</button>
                 <button class="sh-button clear" @click="clearInput">Clear</button>
             </div>
@@ -128,6 +129,52 @@
                     }
                 })
                 this.outputVal = "tableColumns: " + JSON.stringify(tableColumns).replace(/\[/g, "[\n").replace(/\]/g, "\n]").replace(/{/g, "\t{").replace(/},/g, "},\n")
+                this.$notify({
+                    title: '成功',
+                    message: '转换成功',
+                    type: 'success'
+                })
+                this.setStorage()
+            },
+            // 导出
+            generateExportParas() {
+                let headers = ""
+                let sorts = ""
+                this.inputFieldVal
+                .split(/\s/g)
+                .filter(item => {
+                    return item.length > 0
+                })
+                .map(item => {
+                    let props = this.inputInterfaceVal.split(/\n/g).map(lineStr => {
+                        if(new RegExp(item, "ig").test(lineStr)) {
+                            console.table({
+                                "字段名": item,
+                                "匹配接口文档注释": lineStr,
+                                "匹配结果": JSON.stringify({
+                                    prop: lineStr.split(/:/)[0].replace(/[\s\"\']/g, ''),
+                                    label: item, 
+                                })
+                            })
+                            return lineStr.split(/:/)[0].replace(/[\s\"\']/g, '')
+                        }
+                    }).filter(value => {
+                        return value !== undefined
+                    })
+                    if (!props.length) {
+                        console.table({
+                                "字段名": item,
+                                "匹配接口文档注释": "未找到相匹配的接口文档注释",
+                                "匹配结果": JSON.stringify({
+                                    prop: "",
+                                    label: item, 
+                                })
+                            })
+                    }
+                    headers += item + ','
+                    sorts += (props.length ? props[0] : '**') + ','
+                })
+                this.outputVal = 'headers: "' + headers.replace(/,$/,"") + '"\nsorts: "' + sorts.replace(/,$/,"") + '"'
                 this.$notify({
                     title: '成功',
                     message: '转换成功',
