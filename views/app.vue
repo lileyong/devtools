@@ -174,7 +174,7 @@
                     headers += item + ','
                     sorts += (props.length ? props[0] : '**') + ','
                 })
-                this.outputVal = 'headers: "' + headers.replace(/,$/,"") + '"\nsorts: "' + sorts.replace(/,$/,"") + '"'
+                this.outputVal = 'headers: "' + headers.replace(/,$/,"") + '",\nsorts: "' + sorts.replace(/,$/,"") + '"'
                 this.$notify({
                     title: '成功',
                     message: '转换成功',
