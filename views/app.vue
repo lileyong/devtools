@@ -49,7 +49,7 @@
                 })
                 .map(item => {
                     let names = this.inputInterfaceVal.split(/\n/g).map(lineStr => {
-                        if(lineStr.indexOf(item) > -1) {
+                        if(new RegExp(item, "ig").test(lineStr)) {
                             console.table({
                                 "字段名": item,
                                 "匹配接口文档注释": lineStr,
@@ -98,7 +98,7 @@
                 })
                 .map(item => {
                     let props = this.inputInterfaceVal.split(/\n/g).map(lineStr => {
-                        if(lineStr.indexOf(item) > -1) {
+                        if(new RegExp(item, "ig").test(lineStr)) {
                             console.table({
                                 "字段名": item,
                                 "匹配接口文档注释": lineStr,
