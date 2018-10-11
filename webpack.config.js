@@ -61,8 +61,9 @@ let webpackConfig = {
             title: 'ERP开发者工具',
             meta: {
                 keywords: 'ERP, 开发者, 工具',
-                description: 'ERP开发者工具,解放ERP开发中的重复劳动'
-            }
+                description: 'ERP开发者工具,解放ERP开发中的重复劳动',
+            },
+            favicon: './img/tuboss.png'
         })
     ],
     output:{

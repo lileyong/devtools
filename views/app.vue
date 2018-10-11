@@ -41,146 +41,82 @@
             this.getStorage()
         },
         methods: {
-            // 生成SearchFields
-            generateSearchFields() {
-                let searchFields = this.inputFieldVal
+            // 处理输入数据
+            handleInputVal(callback, type) {
+                let headers = ""
+                let sorts = ""
+                let inputValArr = this.inputFieldVal
                 .split(/\s/g)
                 .filter(item => {
                     return item.length > 0
                 })
                 .map(item => {
-                    let names = this.inputInterfaceVal.split(/\n/g).map(lineStr => {
+                    let props = this.inputInterfaceVal.split(/\n/g).map(lineStr => {
                         if(new RegExp(item, "ig").test(lineStr)) {
+                            let prop = lineStr.split(/:/)[0].replace(/[\s\"\']/g, '')
                             console.table({
                                 "字段名": item,
                                 "匹配接口文档注释": lineStr,
-                                "匹配结果": JSON.stringify({
-                                    type: 'input', 
-                                    label: item, 
-                                    name: lineStr.split(/:/)[0].replace(/[\s\"\']/g, '')
-                                })
+                                "匹配结果": JSON.stringify(callback(item, prop))
                             })
-                            return lineStr.split(/:/)[0].replace(/[\s\"\']/g, '')
+                            return prop
                         }
                     }).filter(value => {
                         return value !== undefined
                     })
-                    if (!names.length) {
+                    if (!props.length) {
                         console.table({
-                                "字段名": item,
-                                "匹配接口文档注释": "未找到相匹配的接口文档注释",
-                                "匹配结果": JSON.stringify({ 
-                                    type: 'input', 
-                                    label: item, 
-                                    name: ''
-                                })
-                            })
+                            "字段名": item,
+                            "匹配接口文档注释": "未找到相匹配的接口文档注释",
+                            "匹配结果": JSON.stringify(callback(item))
+                        })
                     }
-                    return {
-                        type: 'input', 
-                        label: item, 
-                        name: names.length ? names[0] : '' 
+                    if (type && type === 'export') {
+                        headers += item + ','
+                        sorts += (props.length ? props[0] : '**') + ','
+                    } else {
+                        return callback(item, props.length ? props[0] : '' )
                     }
                 })
-                this.outputVal = "searchFields: " + JSON.stringify(searchFields).replace(/\[/g, "[\n").replace(/\]/g, "\n]").replace(/{/g, "\t{").replace(/},/g, "},\n")
+                if (type && type === 'export') {
+                    this.outputVal = 'headers: "' + headers.replace(/,$/,"") + '",\nsorts: "' + sorts.replace(/,$/,"") + '"'
+                } else {
+                    this.outputVal = "searchFields: " + JSON.stringify(inputValArr).replace(/\[/g, "[\n").replace(/\]/g, "\n]").replace(/{/g, "\t{").replace(/},/g, "},\n")
+                }
                 this.$notify({
                     title: '成功',
                     message: '转换成功',
                     type: 'success'
                 })
                 this.setStorage()
+            },
+            // 生成SearchFields
+            generateSearchFields() {
+                return this.handleInputVal((item, prop) => {
+                    return {
+                        type: 'input', 
+                        label: item || '', 
+                        name: prop || ''
+                    }
+                })
             },
             // 生成TableColumns
             generateTableColumns() {
-                let tableColumns = this.inputFieldVal
-                .split(/\s/g)
-                .filter(item => {
-                    return item.length > 0
-                })
-                .map(item => {
-                    let props = this.inputInterfaceVal.split(/\n/g).map(lineStr => {
-                        if(new RegExp(item, "ig").test(lineStr)) {
-                            console.table({
-                                "字段名": item,
-                                "匹配接口文档注释": lineStr,
-                                "匹配结果": JSON.stringify({
-                                    prop: lineStr.split(/:/)[0].replace(/[\s\"\']/g, ''),
-                                    label: item, 
-                                })
-                            })
-                            return lineStr.split(/:/)[0].replace(/[\s\"\']/g, '')
-                        }
-                    }).filter(value => {
-                        return value !== undefined
-                    })
-                    if (!props.length) {
-                        console.table({
-                                "字段名": item,
-                                "匹配接口文档注释": "未找到相匹配的接口文档注释",
-                                "匹配结果": JSON.stringify({
-                                    prop: "",
-                                    label: item, 
-                                })
-                            })
-                    }
+                return this.handleInputVal((item, prop) => {
                     return {
-                        prop: props.length ? props[0] : '',
-                        label: item,
+                        prop: prop || '',
+                        label: item || '', 
                     }
                 })
-                this.outputVal = "tableColumns: " + JSON.stringify(tableColumns).replace(/\[/g, "[\n").replace(/\]/g, "\n]").replace(/{/g, "\t{").replace(/},/g, "},\n")
-                this.$notify({
-                    title: '成功',
-                    message: '转换成功',
-                    type: 'success'
-                })
-                this.setStorage()
             },
             // 导出
             generateExportParas() {
-                let headers = ""
-                let sorts = ""
-                this.inputFieldVal
-                .split(/\s/g)
-                .filter(item => {
-                    return item.length > 0
-                })
-                .map(item => {
-                    let props = this.inputInterfaceVal.split(/\n/g).map(lineStr => {
-                        if(new RegExp(item, "ig").test(lineStr)) {
-                            console.table({
-                                "字段名": item,
-                                "匹配接口文档注释": lineStr,
-                                "匹配结果": JSON.stringify({
-                                    prop: lineStr.split(/:/)[0].replace(/[\s\"\']/g, ''),
-                                    label: item, 
-                                })
-                            })
-                            return lineStr.split(/:/)[0].replace(/[\s\"\']/g, '')
-                        }
-                    }).filter(value => {
-                        return value !== undefined
-                    })
-                    if (!props.length) {
-                        console.table({
-                                "字段名": item,
-                                "匹配接口文档注释": "未找到相匹配的接口文档注释",
-                                "匹配结果": JSON.stringify({
-                                    prop: "",
-                                    label: item, 
-                                })
-                            })
+                return this.handleInputVal((item, prop) => {
+                    return {
+                        prop: prop || '',
+                        label: item || '', 
                     }
-                    headers += item + ','
-                    sorts += (props.length ? props[0] : '**') + ','
-                })
-                this.outputVal = 'headers: "' + headers.replace(/,$/,"") + '",\nsorts: "' + sorts.replace(/,$/,"") + '"'
-                this.$notify({
-                    title: '成功',
-                    message: '转换成功',
-                    type: 'success'
-                })
-                this.setStorage()
+                }, 'export')
             },
             // 复制输出结果
             copyOutput() {
