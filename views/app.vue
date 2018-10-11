@@ -173,6 +173,9 @@
                 this.inputInterfaceVal = ''
                 this.outputVal = ''
                 this.logList = []
+                this.footerStyle = {
+                    position: "absolute"
+                }
                 this.$notify({
                     title: '成功',
                     message: '清除成功',
