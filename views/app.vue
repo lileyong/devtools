@@ -1,40 +1,59 @@
 <template>
     <div id="app">
         <div class="cover"></div>
-        <div class="main">
-            <div class="button-group">
-                <button class="sh-button" @click="generateSearchFields">SearchFields</button>
-                <button class="sh-button" @click="generateTableColumns">TableColumns</button>
-                <button class="sh-button" @click="generateExportParas">Exports</button>
-                <button class="sh-button copy" @click="copyOutput">Copy</button>
-                <button class="sh-button clear" @click="clearInput">Clear</button>
+        <div class="content">
+            <div class="main">
+                <div class="button-group">
+                    <button class="sh-button" @click="generateSearchFields">SearchFields</button>
+                    <button class="sh-button" @click="generateTableColumns">TableColumns</button>
+                    <button class="sh-button" @click="generateExportParas">Exports</button>
+                    <button class="sh-button copy" @click="copyOutput">Copy</button>
+                    <button class="sh-button clear" @click="clearInput">Clear</button>
+                </div>
+                <div class="input-and-output">
+                    <!--需求文档中的字段输入-->
+                    <div class="top"><textarea id="inputField" v-model="inputFieldVal" placeholder="输入需求文档中的字段"></textarea></div>
+                    <!--接口文档中的字段及注释输入-->
+                    <div class="top"><textarea id="inputInterface" v-model="inputInterfaceVal" placeholder="输入接口文档中的字段及注释"></textarea></div>
+                    <!--输出对应格式的代码-->
+                    <div class="bottom"><textarea id="output" v-model="outputVal" placeholder="输出对应格式的代码"></textarea></div>
+                </div>
             </div>
-            <div class="input-and-output">
-                <!--需求文档中的字段输入-->
-                <div class="top"><textarea id="inputField" v-model="inputFieldVal" placeholder="输入需求文档中的字段"></textarea></div>
-                <!--接口文档中的字段及注释输入-->
-                <div class="top"><textarea id="inputInterface" v-model="inputInterfaceVal" placeholder="输入接口文档中的字段及注释"></textarea></div>
-                <!--输出对应格式的代码-->
-                <div class="bottom"><textarea id="output" v-model="outputVal" placeholder="输出对应格式的代码"></textarea></div>
+            <div class="main log">
+                <div class="log-head">匹配日志</div>
+                <table class="log-table" v-if="logList.length">
+                    <thead>
+                        <th>字段名</th>
+                        <th>匹配接口文档注释</th>
+                        <th>匹配结果</th>
+                    </thead>
+                    <tbody>
+                        <tr v-for="item in logList" :key="item.field+item.note">
+                            <td>{{item.field}}</td>
+                            <td>{{item.note}}</td>
+                            <td>{{item.result}}</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
-        <main-footer></main-footer>
+        <div id="footer" :style="footerStyle">powered by promise.li</div>
     </div>
 </template>
 
 <script>
-    import MainFooter from "../views/footer.jsx"
     import Clipboard from "../js/clipboard.js"
 
     export default {
-        components: {
-            MainFooter,
-        },
         data() {
             return {
                 inputFieldVal: '',
                 inputInterfaceVal: '',
                 outputVal: '',
+                logList: [],
+                footerStyle: {
+                    position: "absolute"
+                }
             }
         },
         mounted() {
@@ -45,6 +64,10 @@
             handleInputVal(callback, type) {
                 let headers = ""
                 let sorts = ""
+                this.logList = []
+                this.footerStyle = {
+                    position: "relative"
+                }
                 let inputValArr = this.inputFieldVal
                 .split(/\s/g)
                 .filter(item => {
@@ -59,12 +82,22 @@
                                 "匹配接口文档注释": lineStr,
                                 "匹配结果": JSON.stringify(callback(item, prop))
                             })
+                            this.logList.push({
+                                field: item,
+                                note: lineStr,
+                                result: JSON.stringify(callback(item, prop))
+                            })
                             return prop
                         }
                     }).filter(value => {
                         return value !== undefined
                     })
                     if (!props.length) {
+                        this.logList.push({
+                            field: item,
+                            note: "未找到相匹配的接口文档注释",
+                            result: JSON.stringify(callback(item))
+                        })
                         console.table({
                             "字段名": item,
                             "匹配接口文档注释": "未找到相匹配的接口文档注释",
@@ -139,6 +172,7 @@
                 this.inputFieldVal = ''
                 this.inputInterfaceVal = ''
                 this.outputVal = ''
+                this.logList = []
                 this.$notify({
                     title: '成功',
                     message: '清除成功',
@@ -166,7 +200,7 @@
 <style>
     #app {
         height: 100%;
-        overflow: hidden;
+        overflow: auto;
     }
     .cover{
         position: absolute;
@@ -238,5 +272,27 @@
         border: 1px solid #eeeeee;
         background-color: #f0f0f0;
         border-radius: 0px 0px 6px 6px;
+    }
+    .main.log {
+        border-radius: 6px;
+        overflow: hidden;
+    }
+    .log-head {
+        width: 100%;
+        height: 48px;
+        text-align: center;
+        line-height: 48px;
+        font-size: 18px;
+        background-color: #fff;
+    }
+    #footer {
+        bottom: 0;
+        width: 100%;
+        padding: 30px;
+        text-align: center;
+        font-size: 18px;
+        color: #fff;
+        z-index: -1;
+        box-sizing: border-box;
     }
 </style>
