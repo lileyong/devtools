@@ -114,7 +114,7 @@
                 if (type && type === 'export') {
                     this.outputVal = 'headers: "' + headers.replace(/,$/,"") + '",\nsorts: "' + sorts.replace(/,$/,"") + '"'
                 } else {
-                    this.outputVal = "searchFields: " + JSON.stringify(inputValArr).replace(/\[/g, "[\n").replace(/\]/g, "\n]").replace(/{/g, "\t{").replace(/},/g, "},\n")
+                    this.outputVal = (type || 'tableColumns') + ": " + JSON.stringify(inputValArr).replace(/\[/g, "[\n").replace(/\]/g, "\n]").replace(/{/g, "\t{").replace(/},/g, "},\n")
                 }
                 this.$notify({
                     title: '成功',
@@ -131,7 +131,7 @@
                         label: item || '', 
                         name: prop || ''
                     }
-                })
+                }, 'searchFields')
             },
             // 生成TableColumns
             generateTableColumns() {
@@ -140,7 +140,7 @@
                         prop: prop || '',
                         label: item || '', 
                     }
-                })
+                }, 'tableColumns')
             },
             // 导出
             generateExportParas() {
