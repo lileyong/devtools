@@ -75,9 +75,9 @@
                 })
                 .map(item => {
                     let inputInterfaceValArr = []
-                    let isopgw = /(\d+\.\d+\.\d+\.\d+)+?/g.test(this.inputInterfaceVal) // 是否为网关运营平台
+                    let isopgw = /(\d+\.)+\d+/g.test(this.inputInterfaceVal) // 是否为网关运营平台
                     if (isopgw) {
-                        inputInterfaceValArr = this.inputInterfaceVal.split(/(\d+\.\d+\.\d+\.\d+)+?/g)
+                        inputInterfaceValArr = this.inputInterfaceVal.split(/(\d+\.)+\d+/g)
                     } else {
                         inputInterfaceValArr = this.inputInterfaceVal.split(/\n/g)
                     }
@@ -85,10 +85,11 @@
                         if(new RegExp(item, "ig").test(lineStr)) {
                             let prop = ""
                             if (isopgw) {
-                                prop = lineStr.replace(/\nbody/ig,"").replace(/(string|int)/ig,"").replace(/[\u4e00-\u9fa5]/g,"").replace(/[\s\"\']/g, '').replace(/(,|，).*$/g,"")
+                                prop = lineStr.replace(/\nbody/ig,"").replace(/\n(string|int)/ig,"").replace(/\n[\u4e00-\u9fa5]+/g,"")
                             } else {
-                                prop = lineStr.split(/:/)[0].replace(/[\s\"\']/g, '')
+                                prop = lineStr.split(/:/)[0]
                             }
+                            prop = prop.replace(/[\s\"\']/g, "").replace(/(,|，).*$/g,"")
                             console.table({
                                 "字段名": item,
                                 "匹配接口文档注释": lineStr,
