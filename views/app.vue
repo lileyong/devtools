@@ -85,11 +85,14 @@
                         if(new RegExp(item, "ig").test(lineStr)) {
                             let prop = ""
                             if (isopgw) {
-                                prop = lineStr.replace(/\nbody/ig,"").replace(/\n(string|int)/ig,"").replace(/\n[\u4e00-\u9fa5]+/g,"")
+                                prop = lineStr.replace(/\nbody/ig,"").replace(/\n(string|int)\s/ig,"").replace(/\n[\u4e00-\u9fa5]+/g,"")
                             } else {
                                 prop = lineStr.split(/:/)[0]
                             }
                             prop = prop.replace(/[\s\"\']/g, "").replace(/(,|，).*$/g,"")
+                            if (type === 'tableColumns' || type === 'export') {
+                                prop = new RegExp(prop + "str", "ig").test(this.inputInterfaceVal) ? prop + "Str" : prop
+                            }
                             console.table({
                                 "字段名": item,
                                 "匹配接口文档注释": lineStr,
