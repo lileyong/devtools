@@ -85,7 +85,7 @@
                         if(new RegExp(item, "ig").test(lineStr)) {
                             let prop = ""
                             if (isopgw) {
-                                prop = lineStr.replace(/\nbody/ig,"").replace(/\n(string|int)\s/ig,"").replace(/\n[\u4e00-\u9fa5]+/g,"")
+                                prop = lineStr.replace(/\s+body/ig,"").replace(/\s+(string|int)\s+/ig,"").replace(/\n[\u4e00-\u9fa5]+/g,"")
                             } else {
                                 prop = lineStr.split(/:/)[0]
                             }
