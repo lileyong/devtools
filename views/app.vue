@@ -93,15 +93,15 @@
                             if (type === 'tableColumns' || type === 'export') {
                                 prop = new RegExp(prop + "str", "ig").test(this.inputInterfaceVal) ? prop + "Str" : prop
                             }
-                            console.table({
-                                "字段名": item,
-                                "匹配接口文档注释": lineStr,
-                                "匹配结果": JSON.stringify(callback(item, prop))
-                            })
                             this.logList.push({
                                 field: item,
                                 note: lineStr,
                                 result: JSON.stringify(callback(item, prop))
+                            })
+                            console.table({
+                                "字段名": item,
+                                "匹配接口文档注释": lineStr,
+                                "匹配结果": JSON.stringify(callback(item, prop))
                             })
                             return prop
                         }
