@@ -69,7 +69,7 @@
                     position: "relative"
                 }
                 let inputValArr = this.inputFieldVal
-                .split(/\s/g)
+                .split(/[\s,，|]+/g)
                 .filter(item => {
                     return item.length > 0
                 })
@@ -85,7 +85,7 @@
                         if(new RegExp(item, "ig").test(lineStr)) {
                             let prop = ""
                             if (isopgw) {
-                                prop = lineStr.replace(/\s+body/ig,"").replace(/\s+(string|int)\s+/ig,"").replace(/\n[\u4e00-\u9fa5]+/g,"")
+                                prop = lineStr.replace(/\s+body/ig,"").replace(/\s+(string|int)\s+/ig,"").replace(/[\u4e00-\u9fa5]+/g,"")
                             } else {
                                 prop = lineStr.split(/:/)[0]
                             }
