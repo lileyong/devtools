@@ -69,7 +69,7 @@
                     position: "relative"
                 }
                 let inputValArr = this.inputFieldVal
-                .split(/[^\u4e00-\u9fa5]+/g)
+                .split(/[\s,，|]+/g)
                 .filter(item => {
                     return item.length > 0
                 })
