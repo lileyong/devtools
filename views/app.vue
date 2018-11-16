@@ -75,7 +75,7 @@
                 })
                 .map(item => {
                     let inputInterfaceValArr = []
-                    let separator = /((\d+\.)+\d+)|(@Desc)/ig
+                    let separator = /((\d+\.)+\d+)|(\n\n+)/ig
                     let withSeparator = separator.test(this.inputInterfaceVal) // 带有特殊分割符的接口文档
                     if (withSeparator) {
                         inputInterfaceValArr = this.inputInterfaceVal.split(separator).filter(item => item && !separator.test(item))
@@ -87,7 +87,7 @@
                         if(new RegExp(item, "ig").test(lineStr)) {
                             let prop = ""
                             if (withSeparator) {
-                                prop = lineStr.replace(/\s+body/ig,"").replace(/\s+(string|int|integer|boolean)\s+/ig,"").replace(/(private|public)/ig,"").replace(new RegExp(item,"ig"),"").replace(/\(.*\)/ig,"").replace(/;*/ig,"").replace(/[/*()]/ig,"").replace(/[\u4e00-\u9fa5]+/g,"")
+                                prop = lineStr.replace(/@desc/ig,"").replace(/\s+body/ig,"").replace(/\s+(string|int|integer|boolean)\s+/ig,"").replace(/(private|public)/ig,"").replace(new RegExp(item,"ig"),"").replace(/\(.*\)/ig,"").replace(/;*/ig,"").replace(/[/*()]/ig,"").replace(/[\u4e00-\u9fa5]+/g,"")
                             } else {
                                 prop = lineStr.split(/:/)[0]
                             }
