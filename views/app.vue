@@ -75,17 +75,19 @@
                 })
                 .map(item => {
                     let inputInterfaceValArr = []
-                    let isopgw = /(\d+\.)+\d+/g.test(this.inputInterfaceVal) // 是否为网关运营平台
-                    if (isopgw) {
-                        inputInterfaceValArr = this.inputInterfaceVal.split(/(\d+\.)+\d+/g)
+                    let separator = /((\d+\.)+\d+)|(@Desc)/ig
+                    let withSeparator = separator.test(this.inputInterfaceVal) // 带有特殊分割符的接口文档
+                    if (withSeparator) {
+                        inputInterfaceValArr = this.inputInterfaceVal.split(separator).filter(item => item && !separator.test(item))
                     } else {
-                        inputInterfaceValArr = this.inputInterfaceVal.split(/\n/g)
+                        inputInterfaceValArr = this.inputInterfaceVal.split(/\n/g).filter(item => item)
                     }
+                    
                     let props = inputInterfaceValArr.map(lineStr => {
                         if(new RegExp(item, "ig").test(lineStr)) {
                             let prop = ""
-                            if (isopgw) {
-                                prop = lineStr.replace(/\s+body/ig,"").replace(/\s+(string|int)\s+/ig,"").replace(/[\u4e00-\u9fa5]+/g,"")
+                            if (withSeparator) {
+                                prop = lineStr.replace(/\s+body/ig,"").replace(/\s+(string|int|integer|boolean)\s+/ig,"").replace(/(private|public)/ig,"").replace(new RegExp(item,"ig"),"").replace(/\(.*\)/ig,"").replace(/;*/ig,"").replace(/[/*()]/ig,"").replace(/[\u4e00-\u9fa5]+/g,"")
                             } else {
                                 prop = lineStr.split(/:/)[0]
                             }
