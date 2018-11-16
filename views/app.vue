@@ -7,6 +7,7 @@
                     <button class="sh-button" @click="generateSearchFields">SearchFields</button>
                     <button class="sh-button" @click="generateTableColumns">TableColumns</button>
                     <button class="sh-button" @click="generateExportParas">Exports</button>
+                    <button class="sh-button samples" @click="showSamples">Samples</button>
                     <button class="sh-button copy" @click="copyOutput">Copy</button>
                     <button class="sh-button clear" @click="clearInput">Clear</button>
                 </div>
@@ -42,7 +43,11 @@
 </template>
 
 <script>
+    import Sample from "../js/sample.js"
     import Clipboard from "../js/clipboard.js"
+import sample from '../js/sample.js';
+
+    console.log(Sample)
 
     export default {
         data() {
@@ -169,6 +174,8 @@
                     }
                 }, 'export')
             },
+            // 显示样例
+            showSamples() {},
             // 复制输出结果
             copyOutput() {
                 if (!this.outputVal) {
