@@ -90,14 +90,19 @@ import sample from '../js/sample.js';
                     
                     let props = inputInterfaceValArr.map(lineStr => {
                         if(new RegExp(item, "ig").test(lineStr)) {
-                            let prop = ""
-                            if (withSeparator) {
-                                prop = lineStr.replace(/@desc/ig,"").replace(/\s+body/ig,"").replace(/\s+(string|int|integer|boolean)\s+/ig,"").replace(/(private|public)/ig,"").replace(new RegExp(item,"ig"),"").replace(/\(.*\)/ig,"").replace(/;*/ig,"").replace(/[/*()]/ig,"").replace(/[\u4e00-\u9fa5]+/g,"")
-                            } else {
-                                prop = lineStr.split(/:/)[0]
-                            }
-                            prop = prop.replace(/[\s\"\']/g, "").replace(/(,|，).*$/g,"")
-                            if (type === 'tableColumns' || type === 'export') {
+                            let prop = lineStr
+                            .replace(/@desc/ig,"")
+                            .replace(/\s+body/ig,"")
+                            .replace(/\s+(string|int|integer|boolean)\s+/ig,"")
+                            .replace(/(private|public)/ig,"")
+                            .replace(new RegExp(item,"ig"),"")
+                            .replace(/\(.*\)/ig,"")
+                            .replace(/;*/ig,"")
+                            .replace(/[/*()]/ig,"")
+                            .replace(/[\u4e00-\u9fa5]+/g,"")
+                            .replace(/[\s\"\']/g, "")
+                            .replace(/(,|，).*$/g,"")
+                            if (prop && (type === 'tableColumns' || type === 'export')) {
                                 prop = new RegExp(prop + "str", "ig").test(this.inputInterfaceVal) ? prop + "Str" : prop
                             }
                             this.logList.push({
@@ -113,7 +118,7 @@ import sample from '../js/sample.js';
                             return prop
                         }
                     }).filter(value => {
-                        return value !== undefined
+                        return value !== undefined && value !== ''
                     })
                     if (!props.length) {
                         this.logList.push({
