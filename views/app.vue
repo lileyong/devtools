@@ -43,11 +43,7 @@
 </template>
 
 <script>
-    import Sample from "../js/sample.js"
     import Clipboard from "../js/clipboard.js"
-import sample from '../js/sample.js';
-
-    console.log(Sample)
 
     export default {
         data() {
@@ -81,27 +77,27 @@ import sample from '../js/sample.js';
                 .map(item => {
                     let inputInterfaceValArr = []
                     let separator = /((\d+\.)+\d+)|(\n\n+)/ig
+                    let matches = this.inputInterfaceVal.match(separator)
+                    console.log(matches)
                     let withSeparator = separator.test(this.inputInterfaceVal) // 带有特殊分割符的接口文档
                     if (withSeparator) {
                         inputInterfaceValArr = this.inputInterfaceVal.split(separator).filter(item => item && !separator.test(item))
                     } else {
+                        console.log('逐行分割')
                         inputInterfaceValArr = this.inputInterfaceVal.split(/\n/g).filter(item => item)
                     }
-                    
+
+                    console.log(inputInterfaceValArr[0])
+
                     let props = inputInterfaceValArr.map(lineStr => {
                         if(new RegExp(item, "ig").test(lineStr)) {
-                            let prop = lineStr
-                            .replace(/@desc/ig,"")
-                            .replace(/\s+body/ig,"")
-                            .replace(/\s+(string|int|integer|boolean)\s+/ig,"")
-                            .replace(/(private|public)/ig,"")
-                            .replace(new RegExp(item,"ig"),"")
-                            .replace(/\(.*\)/ig,"")
-                            .replace(/;*/ig,"")
-                            .replace(/[/*()]/ig,"")
-                            .replace(/[\u4e00-\u9fa5]+/g,"")
-                            .replace(/[\s\"\']/g, "")
-                            .replace(/(,|，).*$/g,"")
+                            let authAndTypeReg = /(\b(private|public|protected|default)\b\s+)?\b(string|int|integer|boolean)\b/ig // 权限及类型正则
+                            let specailReg = /[,，;\s\"\'\(\)]/ig // 特俗字符正则
+                            let prop = "" // 字段提取
+                            if (authAndTypeReg.test(lineStr)) {
+                                prop = lineStr.replace(/[/*]/ig,"").split(authAndTypeReg).slice(-1)[0]
+                            } 
+                            prop = prop.replace(specailReg,"")
                             if (prop && (type === 'tableColumns' || type === 'export')) {
                                 prop = new RegExp(prop + "str", "ig").test(this.inputInterfaceVal) ? prop + "Str" : prop
                             }
