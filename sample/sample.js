@@ -282,7 +282,7 @@ let sample = [
         备注
         款项名称全码
         城市ID`,
-        inputInterfaceValArr: `/**
+        inputInterfaceVal: `/**
         * 数据状态:0正常,&gt;0:作废
         */
        @Desc("dataStatus")
@@ -347,6 +347,65 @@ let sample = [
    
        @Desc("城市ID")
        private Integer cityId;`
+    },
+    {
+        name: '示例4',
+        tapd: '还款单',
+        inputFieldVal: `还款凭证
+        到账时间
+        还款方式
+        收款方式
+        交易流水号
+        还款方
+        还款银行卡号后4位`,
+        inputInterfaceVal: `/**
+        * 还款凭证，同t8t_ps_smg.smg_remit_record的receipt_img_url
+        */
+       @NotBlank
+       private String receiptImgUrl;
+   
+       /**
+        * 到账时间，同t8t_ps_smg.smg_remit_record的receive_time
+        */
+       @NotNull
+       @Min(1)
+       private Integer receiveTime;
+   
+       /**
+        * 还款方式|枚举：1、银行渠道汇款；2：第三方汇款，同t8t_ps_smg.smg_remit_record的remit_way
+        */
+       @NotNull
+       @Min(1)
+       @Max(2)
+       private Integer remitWay;
+   
+       /**
+        * 收款方式|辅助资料：收款方式（61001），同t8t_ps_smg.smg_remit_record的receipt_way_code
+        */
+       @NotBlank
+       private String receiptWayCode;
+   
+       /**
+        * 交易流水号
+        */
+       @NotBlank
+       private String tradeSerialNo;
+   
+       /**
+        * 还款方
+        */
+       @NotBlank
+       private String payerName;
+   
+       /**
+        * 还款银行卡号后4位
+        */
+       @NotBlank
+       @Pattern(
+               regexp = "^\\d{4}$",
+               message = "银行卡号需取后四位数字"
+       )
+       private String bankcard;`
     }
 ]
 

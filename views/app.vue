@@ -44,6 +44,7 @@
 
 <script>
     import Clipboard from "../js/clipboard.js"
+    import Samples from "../sample/sample.js"
 
     export default {
         data() {
@@ -54,7 +55,8 @@
                 logList: [],
                 footerStyle: {
                     position: "absolute"
-                }
+                },
+                sampleIndex: 0
             }
         },
         mounted() {
@@ -76,11 +78,12 @@
                 })
                 .map(item => {
                     let inputInterfaceValArr = []
-                    let separator = /((\d+\.){2,}\d+)|(\n\n+)/ig
+                    let separator = /((\d+\.){2,}\d+)|([\n\r]\s*[\n\r]+)/ig
                     let withSeparator = separator.test(this.inputInterfaceVal) // 带有特殊分割符的接口文档
                     if (withSeparator) {
                         inputInterfaceValArr = this.inputInterfaceVal.split(separator).filter(item => item && !separator.test(item))
                     } else {
+                        console.log('逐行匹配')
                         inputInterfaceValArr = this.inputInterfaceVal.split(/\n/g).filter(item => item)
                     }
 
@@ -93,6 +96,8 @@
                             if (accurateReg.test(lineStrFormat)) {
                                 lineStrFormat = lineStrFormat.match(accurateReg)[0]
                             }
+
+                            console.log(lineStrFormat.match(/\b\w+\b/ig))
                             
                             prop = this.matchesSort(lineStrFormat.match(/\b\w+\b/ig))[0].replace(specailReg,"")
                             if (type === 'tableColumns' || type === 'export') {
@@ -186,7 +191,17 @@
                 }, 'export')
             },
             // 显示样例
-            showSamples() {},
+            showSamples() {
+                let index = this.sampleIndex
+                this.inputFieldVal = Samples[index].inputFieldVal
+                this.inputInterfaceVal = Samples[index].inputInterfaceVal
+                this.generateTableColumns()
+                if (this.sampleIndex < Samples.length - 1) {
+                    this.sampleIndex++
+                } else {
+                    this.sampleIndex = 0
+                }
+            },
             // 复制输出结果
             copyOutput() {
                 if (!this.outputVal) {
