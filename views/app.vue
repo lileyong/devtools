@@ -76,29 +76,26 @@
                 })
                 .map(item => {
                     let inputInterfaceValArr = []
-                    let separator = /((\d+\.)+\d+)|(\n\n+)/ig
-                    let matches = this.inputInterfaceVal.match(separator)
-                    console.log(matches)
+                    let separator = /((\d+\.){2,}\d+)|(\n\n+)/ig
                     let withSeparator = separator.test(this.inputInterfaceVal) // 带有特殊分割符的接口文档
                     if (withSeparator) {
                         inputInterfaceValArr = this.inputInterfaceVal.split(separator).filter(item => item && !separator.test(item))
                     } else {
-                        console.log('逐行分割')
                         inputInterfaceValArr = this.inputInterfaceVal.split(/\n/g).filter(item => item)
                     }
 
-                    console.log(inputInterfaceValArr[0])
-
                     let props = inputInterfaceValArr.map(lineStr => {
                         if(new RegExp(item, "ig").test(lineStr)) {
-                            let authAndTypeReg = /(\b(private|public|protected|default)\b\s+)?\b(string|int|integer|boolean)\b/ig // 权限及类型正则
-                            let specailReg = /[,，;\s\"\'\(\)]/ig // 特俗字符正则
                             let prop = "" // 字段提取
-                            if (authAndTypeReg.test(lineStr)) {
-                                prop = lineStr.replace(/[/*]/ig,"").split(authAndTypeReg).slice(-1)[0]
-                            } 
-                            prop = prop.replace(specailReg,"")
-                            if (prop && (type === 'tableColumns' || type === 'export')) {
+                            let specailReg = /[,，;\s\"\'\(\)]/ig // 特俗字符正则
+                            let accurateReg = /(\"\b\w+\b\")|((\b(private|public)\b\s+)?\b(string|int|integer|boolean)\b\s+\b\w+\b)/ig // 精准匹配正则
+                            let lineStrFormat = lineStr.replace(/[/*]/ig,"") // 文档注释格式化
+                            if (accurateReg.test(lineStrFormat)) {
+                                lineStrFormat = lineStrFormat.match(accurateReg)[0]
+                            }
+                            
+                            prop = this.matchesSort(lineStrFormat.match(/\b\w+\b/ig))[0].replace(specailReg,"")
+                            if (type === 'tableColumns' || type === 'export') {
                                 prop = new RegExp(prop + "str", "ig").test(this.inputInterfaceVal) ? prop + "Str" : prop
                             }
                             this.logList.push({
@@ -112,6 +109,7 @@
                                 "匹配结果": JSON.stringify(callback(item, prop))
                             })
                             return prop
+                            
                         }
                     }).filter(value => {
                         return value !== undefined && value !== ''
@@ -146,6 +144,18 @@
                     type: 'success'
                 })
                 this.setStorage()
+            },
+            // 匹配结果排序
+            matchesSort(matches) {
+                let newMatches = []
+                matches.map(item => {
+                    if (/(\b(private|public|string|int|integer|boolean|body|\d+)\b)/ig.test(item)) {
+                        newMatches.push(item)
+                    } else {
+                        newMatches.unshift(item)
+                    }
+                })
+                return newMatches
             },
             // 生成SearchFields
             generateSearchFields() {
