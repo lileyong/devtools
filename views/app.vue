@@ -83,12 +83,11 @@
                     if (withSeparator) {
                         inputInterfaceValArr = this.inputInterfaceVal.split(separator).filter(item => item && !separator.test(item))
                     } else {
-                        console.log('逐行匹配')
                         inputInterfaceValArr = this.inputInterfaceVal.split(/\n/g).filter(item => item)
                     }
 
                     let props = inputInterfaceValArr.map(lineStr => {
-                        if(new RegExp(item, "ig").test(lineStr)) {
+                        if(new RegExp('(^|[^\u4e00-\u9fa5])' + item + '($|[^\u4e00-\u9fa5])', "ig").test(lineStr)) {
                             let prop = "" // 字段提取
                             let specailReg = /[,，;\s\"\'\(\)]/ig // 特俗字符正则
                             let accurateReg = /(\"\b\w+\b\")|((\b(private|public)\b\s+)?\b(string|int|integer|boolean)\b\s+\b\w+\b)/ig // 精准匹配正则
@@ -97,8 +96,6 @@
                                 lineStrFormat = lineStrFormat.match(accurateReg)[0]
                             }
 
-                            console.log(lineStrFormat.match(/\b\w+\b/ig))
-                            
                             prop = this.matchesSort(lineStrFormat.match(/\b\w+\b/ig))[0].replace(specailReg,"")
                             if (type === 'tableColumns' || type === 'export') {
                                 prop = new RegExp(prop + "str", "ig").test(this.inputInterfaceVal) ? prop + "Str" : prop
@@ -114,7 +111,6 @@
                                 "匹配结果": JSON.stringify(callback(item, prop))
                             })
                             return prop
-                            
                         }
                     }).filter(value => {
                         return value !== undefined && value !== ''
