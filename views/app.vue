@@ -86,8 +86,11 @@
                         inputInterfaceValArr = this.inputInterfaceVal.split(/\n/g).filter(item => item)
                     }
 
+                    let matchReg = new RegExp(item, "i")
+                    let accurateMatchReg = new RegExp('(^|[^\u4e00-\u9fa5])' + item + '($|[^\u4e00-\u9fa5a-z])', "i")
+                    let accurateMatch = accurateMatchReg.test(this.inputInterfaceVal)
                     let props = inputInterfaceValArr.map(lineStr => {
-                        if(new RegExp('(^|[^\u4e00-\u9fa5])' + item + '($|[^\u4e00-\u9fa5a-z])', "ig").test(lineStr)) {
+                        if((accurateMatch && accurateMatchReg.test(lineStr))||(!accurateMatch && matchReg.test(lineStr))) {
                             let prop = "" // 字段提取
                             let specailReg = /[,，;\s\"\'\(\)]/ig // 特俗字符正则
                             let accurateReg = /(\"\b\w+\b\")|((\b(private|public)\b\s+)?\b(string|int|integer|boolean)\b\s+\b\w+\b)/ig // 精准匹配正则
