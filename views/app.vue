@@ -78,9 +78,9 @@
                 })
                 .map(item => {
                     let inputInterfaceValArr = []
-                    let separator = /((\d+\.){2,}\d+)|([\n\r]\s*[\n\r]+)/ig
+                    let separator = /((\d+\.){2,}\d+)|([\n\r]\s*[\n\r]+)/ig // 特殊分割符
                     let withSeparator = separator.test(this.inputInterfaceVal) // 带有特殊分割符的接口文档
-                    if (withSeparator) {
+                    if (withSeparator && Math.round(this.inputFieldVal.match(/[\s,，|]+/g).length / this.inputInterfaceVal.match(separator).length) === 1) {
                         inputInterfaceValArr = this.inputInterfaceVal.split(separator).filter(item => item && !separator.test(item))
                     } else {
                         inputInterfaceValArr = this.inputInterfaceVal.split(/\n/g).filter(item => item)
@@ -96,10 +96,14 @@
                                 lineStrFormat = lineStrFormat.match(accurateReg)[0]
                             }
 
-                            prop = this.matchesSort(lineStrFormat.match(/\b\w+\b/ig))[0].replace(specailReg,"")
-                            if (type === 'tableColumns' || type === 'export') {
-                                prop = new RegExp(prop + "str", "ig").test(this.inputInterfaceVal) ? prop + "Str" : prop
+                            let matches = lineStrFormat.match(/\b\w+\b/ig)
+                            if (matches) {
+                                prop = this.matchesSort(matches)[0].replace(specailReg,"")
+                                if (type === 'tableColumns' || type === 'export') {
+                                    prop = new RegExp(prop + "str", "ig").test(this.inputInterfaceVal) ? prop + "Str" : prop
+                                }
                             }
+                            
                             this.logList.push({
                                 field: item,
                                 note: lineStr,
@@ -148,6 +152,9 @@
             },
             // 匹配结果排序
             matchesSort(matches) {
+                if (!matches) {
+                    return []
+                }
                 let newMatches = []
                 matches.map(item => {
                     if (/(\b(private|public|string|int|integer|boolean|body|\d+)\b)/ig.test(item)) {
