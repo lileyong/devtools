@@ -31,9 +31,9 @@ let sample = [
         模板编码
         `,
         inputInterfaceVal : `"createBy": "admin",
-        "createName": "admin",
-        "createTime": 0,
-        "createTimeStr": "1970-01-01 08:00:00",
+        "createName": "admin",  //创建人
+        "createTime": 0,  //创建日期
+        "createTimeStr": "1970-01-01 08:00:00",  //创建日期
         "createUser": 0,
         "fapproveDate": 0,            
         "fapproveDateStr": "",     //审核日期
@@ -64,7 +64,7 @@ let sample = [
         "fbusingessType": "装企平台",     //业务类型
         "ftemplateCode":"CCSSSS1",          //模板编码
         "fsaleDepartment": "深圳分公司",   //销售部门
-        "id": 1,
+        "id": 1,                         //序号
         "remark": "",                   //备注
         "updateBy": "admin",
         "updateName": "admin",
