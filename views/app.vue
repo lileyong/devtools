@@ -85,9 +85,10 @@
                     } else {
                         inputInterfaceValArr = this.inputInterfaceVal.split(/\n/g).filter(item => item)
                     }
-
-                    let matchReg = new RegExp(item, "i")
-                    let accurateMatchReg = new RegExp('(^|[^\u4e00-\u9fa5])' + item + '($|[^\u4e00-\u9fa5a-z])', "i")
+                    
+                    let regItem = item.replace("*","\\*").replace("+","\\+").replace("?","\\?")
+                    let matchReg = new RegExp(regItem, "i")
+                    let accurateMatchReg = new RegExp('(^|[^\u4e00-\u9fa5])' + regItem + '($|[^\u4e00-\u9fa5a-z])', "i")
                     let accurateMatch = accurateMatchReg.test(this.inputInterfaceVal)
                     let props = inputInterfaceValArr.map(lineStr => {
                         if((accurateMatch && accurateMatchReg.test(lineStr))||(!accurateMatch && matchReg.test(lineStr))) {
