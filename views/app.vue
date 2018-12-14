@@ -72,7 +72,7 @@
                     position: "relative"
                 }
                 let inputValArr = this.inputFieldVal
-                .split(/[\s,，|]+/g)
+                .split(/[\s,，、|]+/g)
                 .filter(item => {
                     return item.length > 0
                 })
@@ -85,7 +85,7 @@
                     } else {
                         inputInterfaceValArr = this.inputInterfaceVal.split(/\n/g).filter(item => item)
                     }
-                    
+
                     let regItem = item.replace("*","\\*").replace("+","\\+").replace("?","\\?")
                     let matchReg = new RegExp(regItem, "i")
                     let accurateMatchReg = new RegExp('(^|[^\u4e00-\u9fa5])' + regItem + '($|[^\u4e00-\u9fa5a-z])', "i")
