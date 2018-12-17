@@ -71,8 +71,8 @@
                 this.footerStyle = {
                     position: "relative"
                 }
-                let inputValArr = this.inputFieldVal
-                .split(/[\s,，、|]+/g)
+                let fields = Array.from(new Set(this.inputFieldVal.split(/[\s,，、|]+/g)))
+                let inputValArr = fields
                 .filter(item => {
                     return item.length > 0
                 })
@@ -80,7 +80,7 @@
                     let inputInterfaceValArr = []
                     let separator = /((\d+\.){2,}\d+)|([\n\r]\s*[\n\r]+)/ig // 特殊分割符
                     let withSeparator = separator.test(this.inputInterfaceVal) // 带有特殊分割符的接口文档
-                    if (withSeparator && Math.round(this.inputFieldVal.match(/[\s,，|]+/g).length / this.inputInterfaceVal.match(separator).length) === 1) {
+                    if (withSeparator && Math.round(fields.length / this.inputInterfaceVal.match(separator).length) === 1) {
                         inputInterfaceValArr = this.inputInterfaceVal.split(separator).filter(item => item && !separator.test(item))
                     } else {
                         inputInterfaceValArr = this.inputInterfaceVal.split(/\n/g).filter(item => item)
