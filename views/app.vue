@@ -102,7 +102,7 @@
 
                             let matches = lineStrFormat.match(/\b\w+\b/ig)
                             if (matches) {
-                                prop = this.matchesSort(matches)[0].replace(specailReg,"")
+                                prop = this.matchesSort(matches,item)[0].replace(specailReg,"")
                                 if (type === 'tableColumns' || type === 'export') {
                                     prop = new RegExp(prop + "str", "ig").test(this.inputInterfaceVal) ? prop + "Str" : prop
                                 }
@@ -155,18 +155,41 @@
                 this.setStorage()
             },
             // 匹配结果排序
-            matchesSort(matches) {
+            matchesSort(matches,field) {
                 if (!matches) {
                     return []
                 }
-                let newMatches = []
+                let weight = new Object() // 权重
+                
+                // 初始化权重
                 matches.map(item => {
-                    if (/(\b(private|public|string|int|integer|boolean|body|\d+)\b)/ig.test(item)) {
-                        newMatches.push(item)
-                    } else {
-                        newMatches.unshift(item)
+                    weight[item] = item.length
+                })
+                // 权重优化
+                matches.map(item => {
+                    if (/(\b(private|public|string|int|integer|boolean|body|\d+)\b)/ig.test(item) || item === field) {
+                        weight[item] -= 10
+                    } 
+                })
+                // 提取权重值集
+                let weightValueArr = []
+                for (var p in weight) {
+                    weightValueArr.push(weight[p])
+                }
+                // 权重值集排序
+                weightValueArr = weightValueArr.sort((a, b) => {
+                    return b - a
+                })
+                // 字段重新排序
+                let newMatches = []
+                weightValueArr.map(item => {
+                    for (var p in weight) {
+                        if (item === weight[p]) {
+                            newMatches.push(p)
+                        }
                     }
                 })
+                
                 return newMatches
             },
             // 生成SearchFields
