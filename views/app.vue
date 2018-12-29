@@ -172,7 +172,7 @@
                 matches.map(item => {
                     if (/(\b(private|public|string|int|integer|boolean|body|\d+)\b)/ig.test(item) || item === field) {
                         weight[item] -= 10
-                    }  else if (this.type === 'searchFields' && /((string|str|name)\b)/ig.test(item)) {
+                    }  else if ((this.type === 'searchFields' && /((string|str|name)\b)/ig.test(item)) || /\d+\b/ig.test(item)) {
                         weight[item] -= 7
                     } else if (item === item.toUpperCase()) {
                         weight[item] -= 1
@@ -401,17 +401,13 @@
         background-color: #fff;
     }
     .log-table tr td:first-child {
-        width:10%;
-        min-width: 120px;
+        width:12%;
     }
     .log-table tr td:nth-child(2) {
-        width:60%;
+        width:44%;
     }
     .log-table tr td:last-child {
-        width:30%;
-        min-width: 360px;
-        max-width: 480px;
-        word-break: break-all;
+        width:44%;
     }
     #footer {
         bottom: 0;
