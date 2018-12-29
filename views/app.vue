@@ -49,6 +49,7 @@
     export default {
         data() {
             return {
+                type: 'tableColumns',
                 inputFieldVal: '',
                 inputInterfaceVal: '',
                 outputVal: '',
@@ -67,6 +68,7 @@
             handleInputVal(callback, type) {
                 let headers = ""
                 let sorts = ""
+                this.type = type
                 this.logList = []
                 this.footerStyle = {
                     position: "relative"
@@ -102,9 +104,9 @@
 
                             let matches = lineStrFormat.match(/\b\w+\b/ig)
                             if (matches) {
-                                prop = this.matchesSort(matches,item)[0].replace(specailReg,"")
+                                prop = this.matchesSort(matches, item)[0].replace(specailReg,"")
                                 if (type === 'tableColumns' || type === 'export') {
-                                    prop = new RegExp(prop + "str", "ig").test(this.inputInterfaceVal) ? prop + "Str" : prop
+                                    prop = new RegExp('\b' + prop + "str\b", "ig").test(this.inputInterfaceVal) ? prop + "Str" : prop
                                 }
                             }
                             
@@ -142,10 +144,11 @@
                         return callback(item, props.length ? props[0] : '' )
                     }
                 })
+
                 if (type && type === 'export') {
                     this.outputVal = 'headers: "' + headers.replace(/,$/,"") + '",\nsorts: "' + sorts.replace(/,$/,"") + '"'
                 } else {
-                    this.outputVal = (type || 'tableColumns') + ": " + JSON.stringify(inputValArr).replace(/\[/g, "[\n").replace(/\]/g, "\n]").replace(/{/g, "\t{").replace(/},/g, "},\n")
+                    this.outputVal = (type || 'tableColumns') + ": " + this.formmatJsonArr(inputValArr)
                 }
                 this.$notify({
                     title: '成功',
@@ -169,6 +172,8 @@
                 matches.map(item => {
                     if (/(\b(private|public|string|int|integer|boolean|body|\d+)\b)/ig.test(item) || item === field) {
                         weight[item] -= 10
+                    }  else if (this.type === 'searchFields' && /((string|str|name)\b)/ig.test(item)) {
+                        weight[item] -= 7
                     } else if (item === item.toUpperCase()) {
                         weight[item] -= 1
                     }
@@ -192,18 +197,40 @@
                     }
                 })
 
-                console.log(newMatches)
-                
                 return newMatches
+            },
+            // 格式化JSON数组为JSON对象
+            formmatJsonArr (inputValArr) {
+                let jsonStringArr = []
+                for (var p in inputValArr) {
+                    if (Object.keys(inputValArr[p]).length > 3) {
+                        jsonStringArr.push(JSON.stringify(inputValArr[p]).replace(/,/g, ',\n\t\t').replace(/{/g, "\t{\n\t\t").replace(/}/g, "\n\t},\n"))
+                    } else {
+                        jsonStringArr.push(JSON.stringify(inputValArr[p]).replace(/{/g, "\t{").replace(/}/g, "},\n"))
+                    }
+                }
+                return '[\n' + jsonStringArr.join('') + ']'
             },
             // 生成SearchFields
             generateSearchFields() {
                 return this.handleInputVal((item, prop) => {
-                    return {
-                        type: 'input', 
-                        label: item || '', 
-                        name: prop || ''
+                    if (/(日期|时间)/.test(item)) {
+                        return {
+                            type: 'datetime',
+                            label: item || '', 
+                            name: prop || '',
+                            pickertype: 'datetimerange',
+                            startField: prop + '_gte',
+                            endField: prop + '_lte',
+                        }
+                    } else {
+                        return {
+                            type: 'input', 
+                            label: item || '', 
+                            name: prop || ''
+                        }
                     }
+                    
                 }, 'searchFields')
             },
             // 生成TableColumns
@@ -372,6 +399,19 @@
         line-height: 48px;
         font-size: 18px;
         background-color: #fff;
+    }
+    .log-table tr td:first-child {
+        width:10%;
+        min-width: 120px;
+    }
+    .log-table tr td:nth-child(2) {
+        width:60%;
+    }
+    .log-table tr td:last-child {
+        width:30%;
+        min-width: 360px;
+        max-width: 480px;
+        word-break: break-all;
     }
     #footer {
         bottom: 0;
