@@ -80,7 +80,7 @@
                 })
                 .map(item => {
                     let inputInterfaceValArr = []
-                    let separator = /((^|\n)(\d+\.)+\d+)|([\n\r]\s*[\n\r]+)/ig // 特殊分割符
+                    let separator = /((^|\n)\s*(\d+\.)+\d+)|([\n\r]\s*[\n\r]+)/ig // 特殊分割符
                     let withSeparator = separator.test(this.inputInterfaceVal) // 带有特殊分割符的接口文档
                     if (withSeparator && this.inputInterfaceVal.match(separator).length + 1 >= fields.length) {
                         inputInterfaceValArr = this.inputInterfaceVal.split(separator).filter(item => item && !separator.test(item))
