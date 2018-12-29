@@ -97,7 +97,7 @@
                             let accurateReg = /(\"\b\w+\b\")|((\b(private|public)\b\s+)?\b(string|int|integer|boolean)\b\s+\b\w+\b)/ig // 精准匹配正则
                             let lineStrFormat = lineStr.replace(/[/*]/ig,"") // 文档注释格式化
                             if (accurateReg.test(lineStrFormat)) {
-                                lineStrFormat = lineStrFormat.match(accurateReg)[0]
+                                lineStrFormat = lineStrFormat.match(accurateReg).join('\n')
                             }
 
                             let matches = lineStrFormat.match(/\b\w+\b/ig)
@@ -169,7 +169,9 @@
                 matches.map(item => {
                     if (/(\b(private|public|string|int|integer|boolean|body|\d+)\b)/ig.test(item) || item === field) {
                         weight[item] -= 10
-                    } 
+                    } else if (item === item.toUpperCase()) {
+                        weight[item] -= 1
+                    }
                 })
                 // 提取权重值集
                 let weightValueArr = []
@@ -189,6 +191,8 @@
                         }
                     }
                 })
+
+                console.log(newMatches)
                 
                 return newMatches
             },
