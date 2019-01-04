@@ -104,7 +104,7 @@
 
                             let matches = lineStrFormat.match(/\b\w+\b/ig)
                             if (matches) {
-                                prop = this.matchesSort(matches, item)[0].replace(specailReg,"")
+                                prop = this.matchesSort(matches, item, lineStrFormat)[0].replace(specailReg,"")
                                 if (type === 'tableColumns' || type === 'export') {
                                     prop = new RegExp('\b' + prop + "str\b", "ig").test(this.inputInterfaceVal) ? prop + "Str" : prop
                                 }
@@ -158,7 +158,7 @@
                 this.setStorage()
             },
             // 匹配结果排序
-            matchesSort(matches,field) {
+            matchesSort(matches,field,lineStr) {
                 if (!matches) {
                     return []
                 }
@@ -170,11 +170,11 @@
                 })
                 // 权重优化
                 matches.map(item => {
-                    if (/(\b(private|public|string|int|integer|boolean|body|\d+)\b)/ig.test(item) || item === field) {
+                    if (/(\b(private|public|string|int|integer|boolean|body|\d+)\b)/ig.test(item) || new RegExp('\\.' + item).test(lineStr)) {
                         weight[item] -= 10
                     }  else if ((this.type === 'searchFields' && /((string|str|name)\b)/ig.test(item)) || /\d+\b/ig.test(item)) {
                         weight[item] -= 7
-                    } else if (item === item.toUpperCase()) {
+                    } else if (item === item.toUpperCase() || item === field) {
                         weight[item] -= 1
                     }
                 })
