@@ -180,9 +180,10 @@
                         weight[item] -= 7
                     } else if (item === item.toUpperCase() || item === field) {
                         weight[item] -= 1
-                    } else if (new RegExp('[\'\"]?(name|prop)[\'\"]?\\s*:\\s*[\'\"]?' + item + '[\'\"]?').test(lineStr)) {
+                    }
+                    if (new RegExp('[\'\"]?(name|prop)[\'\"]?\\s*:\\s*[\'\"]?' + item + '[\'\"]?').test(lineStr)) {
                         weight[item] += 10
-                    } 
+                    }
                 })
 
                 // 提取权重值集
