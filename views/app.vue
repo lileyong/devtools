@@ -96,7 +96,7 @@
                         if((accurateMatch && accurateMatchReg.test(lineStr))||(!accurateMatch && matchReg.test(lineStr))) {
                             let prop = "" // 字段提取
                             let specailReg = /[,，;\s\"\'\(\)]/ig // 特俗字符正则
-                            let accurateReg = /(\"\b\w+\b\")|((\b(private|public)\b\s+)?\b(string|int|integer|boolean)\b\s+\b\w+\b)/ig // 精准匹配正则
+                            let accurateReg = /((\b(private|public)\b\s+)?\b(string|int|integer|boolean)\b\s+\b\w+\b)/ig // 精准匹配正则
                             let lineStrFormat = lineStr.replace(/[/*]/ig,"") // 文档注释格式化
                             if (accurateReg.test(lineStrFormat)) {
                                 lineStrFormat = lineStrFormat.match(accurateReg).join('\n')
@@ -176,6 +176,8 @@
                         weight[item] -= 7
                     } else if (item === item.toUpperCase() || item === field) {
                         weight[item] -= 1
+                    } else if (new RegExp('"(name|prop)"\s*:\s*"' + item + '"').test(lineStr)) {
+                        weight[item] += 10
                     }
                 })
                 // 提取权重值集
