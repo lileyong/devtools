@@ -44,7 +44,8 @@
 
 <script>
     import Clipboard from "../js/clipboard.js"
-    import Samples from "../sample/sample.js"
+    import commonReg from "../js/commonReg.js"
+    import samples from "../sample/sample.js"
 
     export default {
         data() {
@@ -82,8 +83,11 @@
                     let inputInterfaceValArr = []
                     let separator = /((^|\n)\s*(\d+\.)+\d+)|([\n\r]\s*[\n\r]+)/ig // 特殊分割符
                     let withSeparator = separator.test(this.inputInterfaceVal) // 带有特殊分割符的接口文档
-                    if (withSeparator && this.inputInterfaceVal.match(separator).length + 1 >= fields.length) {
+                    let withJson = commonReg["jsonReg"].test(this.inputInterfaceVal) // Json格式的接口文档
+                    if (withSeparator && this.inputInterfaceVal.split(separator).length >= fields.length) {
                         inputInterfaceValArr = this.inputInterfaceVal.split(separator).filter(item => item && !separator.test(item))
+                    } else if (withJson && this.inputInterfaceVal.match(commonReg["jsonReg"]).length >= fields.length){
+                        inputInterfaceValArr = this.inputInterfaceVal.match(commonReg["jsonReg"]).filter(item => item)
                     } else {
                         inputInterfaceValArr = this.inputInterfaceVal.split(/\n/g).filter(item => item)
                     }
@@ -176,10 +180,11 @@
                         weight[item] -= 7
                     } else if (item === item.toUpperCase() || item === field) {
                         weight[item] -= 1
-                    } else if (new RegExp('"(name|prop)"\s*:\s*"' + item + '"').test(lineStr)) {
+                    } else if (new RegExp('[\'\"]?(name|prop)[\'\"]?\\s*:\\s*[\'\"]?' + item + '[\'\"]?').test(lineStr)) {
                         weight[item] += 10
-                    }
+                    } 
                 })
+
                 // 提取权重值集
                 let weightValueArr = []
                 for (var p in weight) {
@@ -265,10 +270,10 @@
             // 显示样例
             showSamples() {
                 let index = this.sampleIndex
-                this.inputFieldVal = Samples[index].inputFieldVal
-                this.inputInterfaceVal = Samples[index].inputInterfaceVal
+                this.inputFieldVal = samples[index].inputFieldVal
+                this.inputInterfaceVal = samples[index].inputInterfaceVal
                 this.generateTableColumns()
-                if (this.sampleIndex < Samples.length - 1) {
+                if (this.sampleIndex < samples.length - 1) {
                     this.sampleIndex++
                 } else {
                     this.sampleIndex = 0
