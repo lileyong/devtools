@@ -236,10 +236,19 @@
             // 生成TableColumns
             generateTableColumns() {
                 return this.handleInputVal((item, prop) => {
-                    return {
-                        prop: prop || '',
-                        label: item || '', 
+                    if (/(日期|时间)/.test(item)) {
+                        return {
+                            prop: prop || '',
+                            label: item || '',
+                            formatter: 'dateParser',
+                        }
+                    } else {
+                        return {
+                            prop: prop || '',
+                            label: item || '', 
+                        }
                     }
+                    
                 }, 'tableColumns')
             },
             // 导出
