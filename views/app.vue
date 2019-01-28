@@ -226,7 +226,7 @@
             // 生成SearchFields
             generateSearchFields() {
                 return this.handleInputVal((item, prop) => {
-                    if (/(日期|时间)/.test(item)) {
+                    if (/(日期|时间)$/.test(item)) {
                         return {
                             type: 'datetime',
                             label: item || '', 
@@ -248,7 +248,7 @@
             // 生成TableColumns
             generateTableColumns() {
                 return this.handleInputVal((item, prop) => {
-                    if (/(日期|时间)/.test(item)) {
+                    if (/(日期|时间)$/.test(item)) {
                         return {
                             prop: prop || '',
                             label: item || '',
