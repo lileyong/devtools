@@ -136,6 +136,7 @@
                             return value !== undefined && value !== ''
                         })
                     })
+                    console.log(props)
                     if (!props.length) {
                         this.logList.push({
                             field: field,
