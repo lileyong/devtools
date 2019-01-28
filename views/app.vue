@@ -94,7 +94,7 @@
 
                     let regItem = item.replace("*","\\*").replace("+","\\+").replace("?","\\?")
                     let matchReg = new RegExp(regItem, "i")
-                    let accurateMatchReg = new RegExp('(^|[^\u4e00-\u9fa5])' + regItem + '($|[^\u4e00-\u9fa5a-z])', "i")
+                    let accurateMatchReg = new RegExp('(^|[^\u4e00-\u9fa5])' + regItem + '($|[^\u4e00-\u9fa5])', "i")
                     let accurateMatch = accurateMatchReg.test(this.inputInterfaceVal)
                     let props = inputInterfaceValArr.map(lineStr => {
                         if((accurateMatch && accurateMatchReg.test(lineStr))||(!accurateMatch && matchReg.test(lineStr))) {
@@ -143,9 +143,9 @@
                     }
                     if (type && type === 'export') {
                         headers += item + ','
-                        sorts += (props.length ? props[0] : '**') + ','
+                        sorts += (props.length ? this.matchesSort(props)[0] : '**') + ','
                     } else {
-                        return callback(item, props.length ? props[0] : '' )
+                        return callback(item, props.length ? this.matchesSort(props)[0] : '' )
                     }
                 })
 
@@ -178,6 +178,8 @@
                         weight[item] -= 10
                     } else if ((this.type === 'searchFields' && /((string|str|name)\b)/ig.test(item))) {
                         weight[item] -= 7
+                    } else if (((this.type === 'tableColumns'||this.type === 'export') && /((string|str|name)\b)/ig.test(item))) {
+                        weight[item] += 7
                     } else if (/\d+\b/ig.test(item)) {
                         weight[item] -= 2 * item.match(/\d/g).length
                     } else if (item === item.toUpperCase() || item === field) {
