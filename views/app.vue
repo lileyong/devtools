@@ -58,7 +58,12 @@
                 footerStyle: {
                     position: "absolute"
                 },
-                sampleIndex: 0
+                // 样例索引
+                sampleIndex: 0,
+                // 近义词库
+                homoionymList: [
+                    ['日期', '时间']
+                ]
             }
         },
         mounted() {
@@ -75,77 +80,79 @@
                     position: "relative"
                 }
                 let fields = Array.from(new Set(this.inputFieldVal.split(/[\s,，、|]+/g)))
+                let inputInterfaceValArr = []
+                let separator = /((^|\n)\s*(\d+\.)+\d+)|([\n\r]\s*[\n\r]+)/ig // 特殊分割符
+                let withSeparator = separator.test(this.inputInterfaceVal) // 带有特殊分割符的接口文档
+                let withJson = commonReg["jsonReg"].test(this.inputInterfaceVal) // Json格式的接口文档
+                if (withSeparator && this.inputInterfaceVal.split(separator).length >= fields.length) {
+                    inputInterfaceValArr = this.inputInterfaceVal.split(separator).filter(item => item && !separator.test(item))
+                } else if (withJson && this.inputInterfaceVal.match(commonReg["jsonReg"]).length >= fields.length){
+                    inputInterfaceValArr = this.inputInterfaceVal.match(commonReg["jsonReg"]).filter(item => item)
+                } else {
+                    inputInterfaceValArr = this.inputInterfaceVal.split(/\n/g).filter(item => item)
+                }
                 let inputValArr = fields
                 .filter(item => {
                     return item.length > 0
                 })
-                .map(item => {
-                    let inputInterfaceValArr = []
-                    let separator = /((^|\n)\s*(\d+\.)+\d+)|([\n\r]\s*[\n\r]+)/ig // 特殊分割符
-                    let withSeparator = separator.test(this.inputInterfaceVal) // 带有特殊分割符的接口文档
-                    let withJson = commonReg["jsonReg"].test(this.inputInterfaceVal) // Json格式的接口文档
-                    if (withSeparator && this.inputInterfaceVal.split(separator).length >= fields.length) {
-                        inputInterfaceValArr = this.inputInterfaceVal.split(separator).filter(item => item && !separator.test(item))
-                    } else if (withJson && this.inputInterfaceVal.match(commonReg["jsonReg"]).length >= fields.length){
-                        inputInterfaceValArr = this.inputInterfaceVal.match(commonReg["jsonReg"]).filter(item => item)
-                    } else {
-                        inputInterfaceValArr = this.inputInterfaceVal.split(/\n/g).filter(item => item)
-                    }
-
-                    let regItem = item.replace("*","\\*").replace("+","\\+").replace("?","\\?")
-                    let matchReg = new RegExp(regItem, "i")
-                    let accurateMatchReg = new RegExp('(^|[^\u4e00-\u9fa5])' + regItem + '($|[^\u4e00-\u9fa5])', "i")
-                    let accurateMatch = accurateMatchReg.test(this.inputInterfaceVal)
-                    let props = inputInterfaceValArr.map(lineStr => {
-                        if((accurateMatch && accurateMatchReg.test(lineStr))||(!accurateMatch && matchReg.test(lineStr))) {
-                            let prop = "" // 字段提取
-                            let specailReg = /[,，;\s\"\'\(\)]/ig // 特俗字符正则
-                            let accurateReg = /((\b(private|public)\b\s+)?\b(string|int|integer|boolean)\b\s+\b\w+\b)/ig // 精准匹配正则
-                            let lineStrFormat = lineStr.replace(/[/*]/ig,"") // 文档注释格式化
-                            if (accurateReg.test(lineStrFormat)) {
-                                lineStrFormat = lineStrFormat.match(accurateReg).join('\n')
-                            }
-
-                            let matches = lineStrFormat.match(/\b\w+\b/ig)
-                            if (matches) {
-                                prop = this.matchesSort(matches, item, lineStrFormat)[0].replace(specailReg,"")
-                                if (type === 'tableColumns' || type === 'export') {
-                                    prop = new RegExp('\b' + prop + "str\b", "ig").test(this.inputInterfaceVal) ? prop + "Str" : prop
+                .map(field => {
+                    let props = []
+                    this.getHomoionym(field).map(item => {
+                        let regItem = item.replace("*","\\*").replace("+","\\+").replace("?","\\?")
+                        let matchReg = new RegExp(regItem, "i")
+                        let accurateMatchReg = new RegExp('(^|[^\u4e00-\u9fa5])' + regItem + '($|[^\u4e00-\u9fa5])', "i")
+                        let accurateMatch = accurateMatchReg.test(this.inputInterfaceVal)
+                        inputInterfaceValArr.map(lineStr => {
+                            if((accurateMatch && accurateMatchReg.test(lineStr))||(!accurateMatch && matchReg.test(lineStr))) {
+                                let prop = "" // 字段提取
+                                let specailReg = /[,，;\s\"\'\(\)]/ig // 特俗字符正则
+                                let accurateReg = /((\b(private|public)\b\s+)?\b(string|int|integer|boolean)\b\s+\b\w+\b)/ig // 精准匹配正则
+                                let lineStrFormat = lineStr.replace(/[/*]/ig,"") // 文档注释格式化
+                                if (accurateReg.test(lineStrFormat)) {
+                                    lineStrFormat = lineStrFormat.match(accurateReg).join('\n')
                                 }
+
+                                let matches = lineStrFormat.match(/\b\w+\b/ig)
+                                if (matches) {
+                                    prop = this.matchesSort(matches, item, lineStrFormat)[0].replace(specailReg,"")
+                                    if (type === 'tableColumns' || type === 'export') {
+                                        prop = new RegExp('\b' + prop + "str\b", "ig").test(this.inputInterfaceVal) ? prop + "Str" : prop
+                                    }
+                                }
+                                
+                                this.logList.push({
+                                    field: field,
+                                    note: lineStr,
+                                    result: JSON.stringify(callback(field, prop))
+                                })
+                                console.table({
+                                    "字段名": field,
+                                    "匹配接口文档注释": lineStr,
+                                    "匹配结果": JSON.stringify(callback(field, prop))
+                                })
+                                props.push(prop)
                             }
-                            
-                            this.logList.push({
-                                field: item,
-                                note: lineStr,
-                                result: JSON.stringify(callback(item, prop))
-                            })
-                            console.table({
-                                "字段名": item,
-                                "匹配接口文档注释": lineStr,
-                                "匹配结果": JSON.stringify(callback(item, prop))
-                            })
-                            return prop
-                        }
-                    }).filter(value => {
-                        return value !== undefined && value !== ''
+                        }).filter(value => {
+                            return value !== undefined && value !== ''
+                        })
                     })
                     if (!props.length) {
                         this.logList.push({
-                            field: item,
+                            field: field,
                             note: "未找到相匹配的接口文档注释",
-                            result: JSON.stringify(callback(item))
+                            result: JSON.stringify(callback(field))
                         })
                         console.table({
-                            "字段名": item,
+                            "字段名": field,
                             "匹配接口文档注释": "未找到相匹配的接口文档注释",
-                            "匹配结果": JSON.stringify(callback(item))
+                            "匹配结果": JSON.stringify(callback(field))
                         })
                     }
                     if (type && type === 'export') {
-                        headers += item + ','
+                        headers += field + ','
                         sorts += (props.length ? this.matchesSort(props)[0] : '**') + ','
                     } else {
-                        return callback(item, props.length ? this.matchesSort(props)[0] : '' )
+                        return callback(field, props.length ? this.matchesSort(props)[0] : '' )
                     }
                 })
 
@@ -160,6 +167,24 @@
                     type: 'success'
                 })
                 this.setStorage()
+            },
+            // 获取近义词
+            getHomoionym(field) {
+                let homoionym = ''
+                let homoionymArr = []
+                this.homoionymList.map(homoionymItem => {
+                    homoionymItem.map(word => {
+                        if (field.match(word)) {
+                            homoionym = word
+                            homoionymArr = homoionymItem.filter(item => item !== word)
+                        }
+                    })
+                })
+                let fields = new Array(field)
+                homoionymArr.map(item => {
+                    fields.push(field.replace(homoionym, item))
+                })
+                return fields
             },
             // 匹配结果排序
             matchesSort(matches,field,lineStr) {
