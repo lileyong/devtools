@@ -175,14 +175,16 @@
                 // 权重优化
                 matches.map(item => {
                     if (/(\b(private|public|string|int|integer|boolean|body|\d+)\b)/ig.test(item) || new RegExp('\\.' + item).test(lineStr)) {
-                        weight[item] -= 100
-                    }  else if ((this.type === 'searchFields' && /((string|str|name)\b)/ig.test(item)) || /\d+\b/ig.test(item)) {
-                        weight[item] -= 70
-                    } else if (item === item.toUpperCase() || item === field) {
                         weight[item] -= 10
+                    } else if ((this.type === 'searchFields' && /((string|str|name)\b)/ig.test(item))) {
+                        weight[item] -= 7
+                    } else if (/\d+\b/ig.test(item)) {
+                        weight[item] -= 2 * item.match(/\d/g).length
+                    } else if (item === item.toUpperCase() || item === field) {
+                        weight[item] -= 1
                     }
                     if (new RegExp('[\'\"]?(name|prop)[\'\"]?\\s*:\\s*[\'\"]?' + item + '[\'\"]?').test(lineStr)) {
-                        weight[item] += 100
+                        weight[item] += 10
                     }
                 })
 
