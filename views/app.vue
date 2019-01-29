@@ -80,7 +80,7 @@
                 this.footerStyle = {
                     position: "relative"
                 }
-                let fields = Array.from(new Set(this.inputFieldVal.split(/[\s,，、|]+/g)))
+                let fields = Array.from(new Set(this.inputFieldVal.split(/([\s,，、|]|&nbsp;)+/g)))
                 let inputInterfaceValArr = []
                 let separator = /((^|\n)\s*(\d+\.)+\d+)|([\n\r]\s*[\n\r]+)/ig // 特殊分割符
                 let withSeparator = separator.test(this.inputInterfaceVal) // 带有特殊分割符的接口文档
@@ -341,18 +341,50 @@
                     type: 'success'
                 })
             },
+            filterScript (str) {
+                str = str || '';
+                str = decodeURIComponent(str);
+                str = str.replace(/<.*>/g, ''); // 过滤标签注入
+                str = str.replace(/(java|vb|action)script/gi, ''); // 过滤脚本注入
+                str = str.replace(/[\"\'][\s ]*([^=\"\'\s ]+[\s ]*=[\s ]*[\"\']?[^\"\']+[\"\']?)+/gi, ''); // 过滤HTML属性注入
+                str = str.replace(/[\s ]/g, '&nbsp;'); // 替换空格
+                return str;
+            },
+            // getPara
+            getPara (name, url) {
+                var paraStr = (typeof url == 'undefined') ? window.location.href : url;
+                var paraArr = paraStr.split(/[?#]/g);
+                for(var index = 1;index < paraArr.length;index++){
+                    var para = paraArr[index];
+                    para = para.split('&');
+                    for (var i = para.length - 1; para[i]; i--) {
+                        para[i] = para[i].split('=');
+                        if (para[i][0] == name) {
+                            try { // 防止FF等decodeURIComponent异常
+                                return this.filterScript(para[i][1]);
+                            } catch (e) {
+                                return para[i][1];
+                            }
+                        }
+                    }
+                }
+            },
             // setStorage
             setStorage() {
                 if (window.localStorage) {
                     window.localStorage.setItem('inputFieldVal', this.inputFieldVal)
                     window.localStorage.setItem('inputInterfaceVal', this.inputInterfaceVal)
                 }
+                window.history.pushState({}, "", "?inputFieldVal=" + encodeURIComponent(this.inputFieldVal))
             },
             // getStorage
             getStorage() {
                 if (window.localStorage) {
                     this.inputFieldVal = window.localStorage.getItem('inputFieldVal') || ''
                     this.inputInterfaceVal = window.localStorage.getItem('inputInterfaceVal') || ''
+                }
+                if (this.getPara('inputFieldVal')) {
+                    this.inputFieldVal = this.getPara('inputFieldVal').replace(/&nbsp;/g, " ")
                 }
             },
         }
