@@ -101,7 +101,7 @@
                     this.getHomoionym(field).map(item => {
                         let regItem = item.replace("*","\\*").replace("+","\\+").replace("?","\\?")
                         let matchReg = new RegExp(regItem, "i")
-                        let accurateMatchReg = new RegExp('(^|[^\u4e00-\u9fa5])' + regItem + '($|[^\u4e00-\u9fa5])', "i")
+                        let accurateMatchReg = new RegExp('(^|[^\u4e00-\u9fa5])' + regItem + '($|[^\u4e00-\u9fa5]|id|名称)', "i")
                         let accurateMatch = accurateMatchReg.test(this.inputInterfaceVal)
                         inputInterfaceValArr.map(lineStr => {
                             if((accurateMatch && accurateMatchReg.test(lineStr))||(!accurateMatch && matchReg.test(lineStr))) {
