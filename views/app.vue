@@ -101,21 +101,21 @@
                     this.getHomoionym(field).map(item => {
                         let regItem = item.replace("*","\\*").replace("+","\\+").replace("?","\\?")
                         let matchReg = new RegExp(regItem, "i")
-                        let accurateMatchReg = new RegExp('(^|[^\u4e00-\u9fa5])' + regItem + '($|[^\u4e00-\u9fa5]|id|名称)', "i")
+                        let accurateMatchReg = new RegExp('(^|[^\u4e00-\u9fa5a-z])' + regItem + '($|[^\u4e00-\u9fa5a-z]|id|名称)', "i")
                         let accurateMatch = accurateMatchReg.test(this.inputInterfaceVal)
                         inputInterfaceValArr.map(lineStr => {
-                            if((accurateMatch && accurateMatchReg.test(lineStr))||(!accurateMatch && matchReg.test(lineStr))) {
-                                let prop = "" // 字段提取
-                                let specailReg = /[,，;\s\"\'\(\)]/ig // 特俗字符正则
-                                let accurateReg = /((\b(private|public)\b\s+)?\b(string|int|integer|boolean)\b\s+\b\w+\b)/ig // 精准匹配正则
-                                let lineStrFormat = lineStr.replace(/[/*]/ig,"") // 文档注释格式化
-                                if (accurateReg.test(lineStrFormat)) {
-                                    lineStrFormat = lineStrFormat.match(accurateReg).join('\n')
-                                }
+                            let prop = "" // 字段提取
+                            let specailReg = /[,，;\s\"\'\(\)]/ig // 特俗字符正则
+                            let accurateReg = /((\b(private|public)\b\s+)?\b(string|int|integer|boolean)\b\s+\b\w+\b)/ig // 精准匹配正则
+                            let lineStrFilter = lineStr.replace(/[/*]/ig,"").replace(new RegExp("=.*$", "ig"), "") // 文档注释过滤
+                            if (accurateReg.test(lineStrFilter)) {
+                                lineStrFilter = lineStrFilter.match(accurateReg).join('\n')
+                            }
 
-                                let matches = lineStrFormat.match(/\b\w+\b/ig)
+                            if((accurateMatch && accurateMatchReg.test(lineStrFilter))||(!accurateMatch && matchReg.test(lineStrFilter))) {
+                                let matches = lineStrFilter.match(/\b\w+\b/ig)
                                 if (matches) {
-                                    prop = this.matchesSort(matches, item, lineStrFormat)[0].replace(specailReg,"")
+                                    prop = this.matchesSort(matches, item, lineStrFilter)[0].replace(specailReg,"")
                                     if (type === 'tableColumns' || type === 'export') {
                                         prop = new RegExp('\b' + prop + "str\b", "ig").test(this.inputInterfaceVal) ? prop + "Str" : prop
                                     }
