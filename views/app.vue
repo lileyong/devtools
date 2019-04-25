@@ -108,9 +108,6 @@
                             let specailReg = /[,，;\s\"\'\(\)]/ig // 特俗字符正则
                             let accurateReg = /((\b(private|public)\b\s+)?\b(string|int|integer|boolean)\b\s+\b\w+\b)/ig // 精准匹配正则
                             let lineStrFilter = lineStr.replace(/[/*]/ig,"").replace(new RegExp("=.*$", "ig"), "") // 文档注释过滤
-                            if (accurateReg.test(lineStrFilter)) {
-                                lineStrFilter = lineStrFilter.match(accurateReg).join('\n')
-                            }
 
                             if((accurateMatch && accurateMatchReg.test(lineStrFilter))||(!accurateMatch && matchReg.test(lineStrFilter))) {
                                 let matches = lineStrFilter.match(/\b\w+\b/ig)
