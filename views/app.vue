@@ -128,7 +128,7 @@
                                     "匹配接口文档注释": lineStr,
                                     "匹配结果": JSON.stringify(callback(field, prop))
                                 })
-                                props.push(prop)
+                                props.push(this.underlineToHumpType(prop))
                             }
                         }).filter(value => {
                             return value !== undefined && value !== ''
@@ -245,6 +245,14 @@
                     }
                 }
                 return '[\n' + jsonStringArr.join('') + ']'
+            },
+            // 下划线转驼峰
+            underlineToHumpType(str) {
+                let matches = str.match(/_[a-z]/g)
+                matches && matches.forEach(item => {
+                    str = str.replace(item, item.replace('_','').toUpperCase())
+                })
+                return str
             },
             // 生成SearchFields
             generateSearchFields() {
