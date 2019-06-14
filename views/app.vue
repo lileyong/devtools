@@ -92,6 +92,7 @@
                 } else {
                     inputInterfaceValArr = this.inputInterfaceVal.split(/\n/g).filter(item => item)
                 }
+                inputInterfaceValArr = Array.from(new Set(inputInterfaceValArr))
                 let inputValArr = fields
                 .filter(item => {
                     return item.length > 0
