@@ -2,8 +2,8 @@
  * @function 根据模板字符串快速生成tableColumns
  * @param templateStr 模板字符串
  */
-function generateTableColumns(templateStr) {
-    let tableColumns = templateStr
+function generateTableColumns (templateStr) {
+    const tableColumns = templateStr
         .split(/\s/g)
         .filter(item => {
             return item.length > 0
@@ -11,7 +11,7 @@ function generateTableColumns(templateStr) {
         .map(item => {
             return {
                 prop: '',
-                label: item,
+                label: item
             }
         })
     console.log(JSON.stringify(tableColumns))
@@ -21,8 +21,8 @@ function generateTableColumns(templateStr) {
  * @function 根据字符串数组快速生成opts
  * @param strArr 字符串数组
  */
-function buildOptsByArray(strArr, opt = {}) {
-    let Opts = []
+function buildOptsByArray (strArr, opt = {}) {
+    const Opts = []
     let i = opt.startVal || 1
     arr.map(item => {
         Opts.push({ text: item, value: i++ })

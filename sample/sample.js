@@ -1,4 +1,4 @@
-let sample = [
+const sample = [
     {
         name: '示例1',
         tapd: '应收单单据查询',
@@ -30,7 +30,7 @@ let sample = [
         集成信息
         模板编码
         `,
-        inputInterfaceVal : `"createBy": "admin",
+        inputInterfaceVal: `"createBy": "admin",
         "createName": "admin",  //创建人
         "createTime": 0,  //创建日期
         "createTimeStr": "1970-01-01 08:00:00",  //创建日期
@@ -73,7 +73,7 @@ let sample = [
         "updateUser": 0`
     },
     {
-        name:"示例2",
+        name: '示例2',
         tapd: '员工往来记账单',
         inputFieldVal: `序号	
         单据行ID	
