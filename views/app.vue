@@ -7,6 +7,7 @@
                     <button class="sh-button" @click="generateSearchFields">SearchFields</button>
                     <button class="sh-button" @click="generateTableColumns">TableColumns</button>
                     <button class="sh-button" @click="generateExportParas">Exports</button>
+                    <button class="sh-button" @click="generateSourceMap">SourceMap</button>
                     <button class="sh-button samples" @click="showSamples">Samples</button>
                     <button class="sh-button copy" @click="copyOutput">Copy</button>
                     <button class="sh-button clear" @click="clearInput">Clear</button>
@@ -82,6 +83,7 @@
                 }
                 let fields = Array.from(new Set(this.inputFieldVal.split(/[\s,，、|]+/g)))
                 let inputInterfaceValArr = []
+                let inputInterfaceValMap = this.inputInterfaceVal.split(/[\s,，、|]+/g)
                 let separator = /((^|\n)\s*(\d+\.)+\d+)|([\n\r]\s*[\n\r]+)/ig // 特殊分割符
                 let withSeparator = separator.test(this.inputInterfaceVal) // 带有特殊分割符的接口文档
                 let withJson = commonReg["jsonReg"].test(this.inputInterfaceVal) // Json格式的接口文档
@@ -93,11 +95,12 @@
                     inputInterfaceValArr = this.inputInterfaceVal.split(/\n/g).filter(item => item)
                 }
                 inputInterfaceValArr = Array.from(new Set(inputInterfaceValArr))
+                
                 let inputValArr = fields
                 .filter(item => {
                     return item.length > 0
                 })
-                .map(field => {
+                .map((field, index) => {
                     let props = []
                     this.getHomoionym(field).map(item => {
                         let regItem = item.replace("*","\\*").replace("+","\\+").replace("?","\\?")
@@ -136,6 +139,23 @@
                         })
                     })
                     if (!props.length) {
+                        if (inputInterfaceValMap.length / fields.length >= 0.8) {
+                            props.push(inputInterfaceValMap[index])
+                        }
+                    }
+                    if (props.length) {
+                        let prop = props[0]
+                        this.logList.push({
+                            field: field,
+                            note: prop,
+                            result: JSON.stringify(callback(field, prop))
+                        })
+                        console.table({
+                            "字段名": field,
+                            "匹配接口文档注释": prop,
+                            "匹配结果": JSON.stringify(callback(field, prop))
+                        })
+                    } else {
                         this.logList.push({
                             field: field,
                             note: "未找到相匹配的接口文档注释",
@@ -147,11 +167,16 @@
                             "匹配结果": JSON.stringify(callback(field))
                         })
                     }
+                    var prop = props.length ? this.matchesSort(props)[0] : ''
                     if (type && type === 'export') {
                         headers += field + ','
-                        sorts += (props.length ? this.matchesSort(props)[0] : '**') + ','
+                        sorts += (prop ? prop : '**') + ','
+                    } else if (type && type === 'sourceMap') {
+                        var obj = {}
+                        obj[field] = prop
+                        return obj
                     } else {
-                        return callback(field, props.length ? this.matchesSort(props)[0] : '' )
+                        return callback(field, prop )
                     }
                 })
 
@@ -304,6 +329,15 @@
                     }
                 }, 'export')
             },
+            // 生成sourceMap
+            generateSourceMap() {
+                return this.handleInputVal((item, prop) => {
+                    return {
+                        prop: prop || '',
+                        label: item || '',
+                    }
+                }, 'sourceMap')
+            },
             // 显示样例
             showSamples() {
                 let index = this.sampleIndex
@@ -399,6 +433,7 @@
 
 <style>
     #app {
+        min-width: 947px;
         height: 100%;
         overflow: auto;
     }
@@ -415,18 +450,20 @@
     .main {
         margin: 20px auto;
         width: 80%;
-        min-width: 850px;
+        min-width: 917px;
         max-width: 1220px;
         box-shadow: 0 0 5px #666;
         opacity: 0.9;
     }
     .button-group {
         display: flex;
+        justify-content: flex-start;
         width: 100%;
         height: 48px;
         background-color: #1e3046;
     }
     .sh-button {
+        flex-shrink: 0;
         margin: 8px 8px 8px 12px;
         min-width: 106px;
         height:32px;
