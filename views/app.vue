@@ -85,7 +85,6 @@
                 let fields = Array.from(new Set(this.inputFieldVal.split(/[\s,，、|]+/g)))
                 // 接口文档分割
                 let inputInterfaceValArr = []
-                let inputInterfaceValMap = this.inputInterfaceVal.replace(/[/*]/ig,"").split(/[\s,，、|]+/g)
                 let separator = /((^|\n)\s*(\d+\.)+\d+)|([\n\r]\s*[\n\r]+)/ig // 特殊分割符
                 let withSeparator = separator.test(this.inputInterfaceVal) // 带有特殊分割符的接口文档
                 let withJson = commonReg["jsonReg"].test(this.inputInterfaceVal) // Json格式的接口文档
@@ -140,7 +139,9 @@
                             return value !== undefined && value !== ''
                         })
                     })
-                    if (!props.length) {
+                    // 生成sourceMap
+                    if (type === 'sourceMap' && !props.length) {
+                        let inputInterfaceValMap = this.inputInterfaceVal.replace(/[/*]/ig,"").split(/[\s,，、|]+/g)
                         if (inputInterfaceValMap.length / fields.length >= 0.8) {
                             props.push(inputInterfaceValMap[index])
                         }
