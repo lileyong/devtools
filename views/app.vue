@@ -81,9 +81,11 @@
                 this.footerStyle = {
                     position: "relative"
                 }
+                // 需求字段分割
                 let fields = Array.from(new Set(this.inputFieldVal.split(/[\s,，、|]+/g)))
+                // 接口文档分割
                 let inputInterfaceValArr = []
-                let inputInterfaceValMap = this.inputInterfaceVal.split(/[\s,，、|]+/g)
+                let inputInterfaceValMap = this.inputInterfaceVal.replace(/[/*]/ig,"").split(/[\s,，、|]+/g)
                 let separator = /((^|\n)\s*(\d+\.)+\d+)|([\n\r]\s*[\n\r]+)/ig // 特殊分割符
                 let withSeparator = separator.test(this.inputInterfaceVal) // 带有特殊分割符的接口文档
                 let withJson = commonReg["jsonReg"].test(this.inputInterfaceVal) // Json格式的接口文档
