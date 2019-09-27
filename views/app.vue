@@ -46,6 +46,7 @@
 <script>
     import Clipboard from "../js/clipboard.js"
     import commonReg from "../js/commonReg.js"
+    import homoionymList from "../js/homoionymList.js"
     import samples from "../sample/sample.js"
 
     export default {
@@ -62,10 +63,7 @@
                 // 样例索引
                 sampleIndex: 0,
                 // 近义词库
-                homoionymList: [
-                    ['日期', '时间'],
-                    ['编号', '编码']
-                ]
+                homoionymList: homoionymList
             }
         },
         mounted() {
