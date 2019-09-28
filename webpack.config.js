@@ -17,6 +17,11 @@ const webpackConfig = {
     },
     module: {
         rules: [{
+            enforce: 'pre',
+            test: /\.(js|jsx|vue)$/,
+            exclude: /js\/clipboard\.js/,
+            loader: 'eslint-loader'
+        }, {
             test: /\.vue$/,
             loader: 'vue-loader'
         }, {

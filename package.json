@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "eslint":  "eslint . --fix",
+    "eslint": "eslint --ext .js --ext .jsx --ext .vue . --fix",
     "dev": "cross-env NODE_ENV=development webpack-dev-server --config webpack.config.js",
     "build": "cross-env NODE_ENV=production webpack --config webpack.config.js"
   },
@@ -17,6 +17,7 @@
   "devDependencies": {
     "@babel/core": "^7.0.1",
     "autoprefixer": "^9.1.5",
+    "babel-eslint": "^10.0.3",
     "babel-helper-vue-jsx-merge-props": "^2.0.3",
     "babel-loader": "^8.0.2",
     "babel-plugin-syntax-jsx": "^6.18.0",
@@ -27,6 +28,7 @@
     "css-loader": "^1.0.0",
     "eslint": "^6.1.0",
     "eslint-config-standard": "^13.0.1",
+    "eslint-loader": "^3.0.2",
     "eslint-plugin-import": "^2.18.2",
     "eslint-plugin-node": "^9.1.0",
     "eslint-plugin-promise": "^4.2.1",

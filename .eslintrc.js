@@ -21,6 +21,7 @@ module.exports = {
   ],
   rules: {
     "no-tabs": "off",
+    "no-useless-escape": "off",
     "indent": ["error", 4]
   }
 }

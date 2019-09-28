@@ -1,2 +1,2 @@
-/dist
-views/*.vue
+dist
+js/clipboard.js
