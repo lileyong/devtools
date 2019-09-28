@@ -19,7 +19,6 @@ const webpackConfig = {
         rules: [{
             enforce: 'pre',
             test: /\.(js|jsx|vue)$/,
-            exclude: /js\/clipboard\.js/,
             loader: 'eslint-loader',
             options: {
                 fix: true
