@@ -305,7 +305,7 @@ export default {
             // 权重优化
             matches.map(item => {
                 if (
-                    /(\b(private|public|string|int|integer|boolean|body|\d+)\b)/gi.test(
+                    /(\b(private|public|optional|string|int|integer|number|boolean|body|\d+)\b)/gi.test(
                         item
                     ) ||
                     new RegExp('\\.' + item).test(lineStr)
