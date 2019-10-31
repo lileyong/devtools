@@ -91,7 +91,7 @@ export default {
             }
             // 需求字段分割
             const fields = Array.from(
-                new Set(this.inputFieldVal.split(/[\s,，、|]+/g))
+                new Set(this.inputFieldVal.split(/[\s\/,，、|]+/g))
             )
             // 接口文档分割
             let inputInterfaceValArr = []
