@@ -308,9 +308,11 @@ export default {
                     /(\b(private|public|optional|string|int|integer|number|bigdecimal|boolean|body|\d+)\b)/gi.test(
                         item
                     ) ||
-                    new RegExp('\\.' + item).test(lineStr)
+                    new RegExp('\\.' + item).test(lineStr) ||
+                    new RegExp(item + '\\.').test(lineStr) ||
+                    new RegExp('@' + item).test(lineStr)
                 ) {
-                    weight[item] -= 10
+                    weight[item] -= 15
                 } else if (
                     this.type === 'searchFields' &&
                     /((string|str|name)\b)/gi.test(item)
