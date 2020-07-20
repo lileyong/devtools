@@ -1,6 +1,8 @@
 const path = require('path')
 const HappyPack = require('happypack')
-const { VueLoaderPlugin } = require('vue-loader')
+const {
+    VueLoaderPlugin
+} = require('vue-loader')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const cssLoader = ['style-loader', 'css-loader', 'postcss-loader']
 
@@ -9,8 +11,7 @@ module.exports = {
         app: 'src/index.js'
     },
     module: {
-        rules: [
-            {
+        rules: [{
                 enforce: 'pre',
                 test: /\.(js|vue)$/,
                 loader: 'eslint-loader',
@@ -42,15 +43,13 @@ module.exports = {
 
             {
                 test: /\.(jpg|jpeg|png|svg|gif)$/,
-                use: [
-                    {
-                        loader: 'url-loader',
-                        options: {
-                            limit: 1024,
-                            name: 'images/[name].[ext]'
-                        }
+                use: [{
+                    loader: 'url-loader',
+                    options: {
+                        limit: 1024,
+                        name: 'images/[name].[ext]'
                     }
-                ]
+                }]
             },
             {
                 test: /\.(ttf|eot|woff)$/,
@@ -71,7 +70,8 @@ module.exports = {
         new HtmlWebpackPlugin({
             meta: {
                 viewport: 'width=device-width, initial-scale=1.0'
-            }
+            },
+            favicon: 'src/img/tuboss.png'
         })
     ],
     resolve: {
