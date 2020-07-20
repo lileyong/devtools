@@ -1,8 +1,8 @@
 import Vue from 'vue'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
-import App from '../views/app.vue'
-import '../css/main.styl'
+import App from './views/app.vue'
+import './css/main.styl'
 
 Vue.use(ElementUI)
 

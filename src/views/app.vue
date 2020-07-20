@@ -85,11 +85,11 @@ export default {
             let inputInterfaceValArr = []
             const separator = /((^|\n)\s*(\d+\.)+\d+)|([\n\r]\s*[\n\r]+)/ig // 特殊分割符
             const withSeparator = separator.test(this.inputInterfaceVal) // 带有特殊分割符的接口文档
-            const withJson = commonReg['jsonReg'].test(this.inputInterfaceVal) // Json格式的接口文档
+            const withJson = commonReg.jsonReg.test(this.inputInterfaceVal) // Json格式的接口文档
             if (withSeparator && this.inputInterfaceVal.split(separator).length >= fields.length) {
                 inputInterfaceValArr = this.inputInterfaceVal.split(separator).filter(item => item && !separator.test(item))
-            } else if (withJson && this.inputInterfaceVal.match(commonReg['jsonReg']).length >= fields.length) {
-                inputInterfaceValArr = this.inputInterfaceVal.match(commonReg['jsonReg']).filter(item => item)
+            } else if (withJson && this.inputInterfaceVal.match(commonReg.jsonReg).length >= fields.length) {
+                inputInterfaceValArr = this.inputInterfaceVal.match(commonReg.jsonReg).filter(item => item)
             } else {
                 inputInterfaceValArr = this.inputInterfaceVal.split(/\n/g).filter(item => item)
             }
