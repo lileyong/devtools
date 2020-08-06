@@ -1,5 +1,5 @@
 {
-    "name": "webpack-config",
+    "name": "devtools",
     "version": "1.0.0",
     "scripts": {
         "dev": "webpack-dev-server --config ./build/webpack.dev.js",
@@ -8,6 +8,7 @@
         "eslint": "eslint --ext .js --ext .vue .",
         "eslint:fix": "eslint --fix --ext .js --ext .vue ."
     },
+    "license": "MIT",
     "dependencies": {
         "element-ui": "^2.13.2",
         "vue": "^2.6.10",
