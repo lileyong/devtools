@@ -1,6 +1,4 @@
 const path = require('path')
-const webpack = require('webpack')
-const AddAssetHtmlWebpackPlugin = require('add-asset-html-webpack-plugin')
 const HappyPack = require('happypack')
 const { VueLoaderPlugin } = require('vue-loader')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
@@ -64,15 +62,6 @@ module.exports = {
         ],
     },
     plugins: [
-        new webpack.DllReferencePlugin({
-            manifest: path.resolve(__dirname, '../dll/manifest.json'),
-        }),
-        new AddAssetHtmlWebpackPlugin({
-            filepath: path.resolve(__dirname, '../dll/vue.js')
-        }),
-        new AddAssetHtmlWebpackPlugin({
-            filepath: path.resolve(__dirname, '../dll/element.js')
-        }),
         new HappyPack({
             id: 'happybabel',
             loaders: ['babel-loader?cacheDirectory'],
