@@ -223,7 +223,7 @@ export default {
             })
             // 权重优化
             matches.map(item => {
-                if (/(\b(private|public|string|int|integer|boolean|body|\d+)\b)/ig.test(item) || new RegExp('\\.' + item).test(lineStr)) {
+                if (/(\b(private|public|string|int|integer|boolean|body|ApiModelProperty|\d+)\b)/ig.test(item) || new RegExp('\\.' + item).test(lineStr)) {
                     weight[item] -= 10
                 } else if ((this.type === 'searchFields' && /((string|str|name)\b)/ig.test(item))) {
                     weight[item] -= 7
