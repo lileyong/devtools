@@ -223,8 +223,8 @@ export default {
             })
             // 权重优化
             matches.map(item => {
-                if (/(\b(private|public|string|int|integer|boolean|body|ApiModelProperty|\d+)\b)/ig.test(item) || new RegExp('\\.' + item).test(lineStr)) {
-                    weight[item] -= 10
+                if (/(\b(private|public|string|int|integer|boolean|body|ApiModelProperty|BigDecimal|\d+)\b)/ig.test(item) || new RegExp('\\.' + item).test(lineStr)) {
+                    weight[item] -= 15
                 } else if ((this.type === 'searchFields' && /((string|str|name)\b)/ig.test(item))) {
                     weight[item] -= 7
                 } else if (((this.type === 'tableColumns' || this.type === 'export') && /((string|str|name)\b)/ig.test(item))) {
